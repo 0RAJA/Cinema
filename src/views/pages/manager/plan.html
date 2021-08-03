@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .img img {
+            height: 100px;
+        }
+    </style>
+    <style>
+        #main {
+            position: relative;
+        }
+
+        #page_nav {
+            position: absolute;
+            bottom: 0px;
+            /*left:50px;*/
+        }
+    </style>
+</head>
+<body>
+<div>
+    <a href="/manage/main">返回</a>
+</div>
+<table id="main">
+    <table>
+        <tr>
+            <td>预览</td>
+            <td>电影名</td>
+            <td>影厅名</td>
+            <td>开始时间</td>
+            <td>结束时间</td>
+            <td>价格</td>
+            <td colspan="2">操作</td>
+        </tr>
+        {{range .Movies}}
+        <tr>
+            <td class="img"><img src="{{.ImgPath}}" alt="预览"></td>
+            <td>{{.MovieName}}</td>
+            <td>{{.ScreenName}}</td>
+            <td>{{.UpTime}}</td>
+            <td>{{.DownTime}}</td>
+            <td>{{.Price}}</td>
+            <td><a href="/manage/toAddOrUpdatePlan?planID={{.ID}}">修改</a></td>
+            <td><a href="/manage/deleteMovie?planID={{.ID}}">删除</a></td>
+        </tr>
+        {{end}}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><a href="/manage/toAddOrUpdatePlan">添加计划</a></td>
+        </tr>
+    </table>
+</table>
+<div id="page_nav">
+    <button onclick="location.href='/manage/plan?pageNo=1'">首页</button>
+    <button id="prev" onclick="location.href='/manage/plan?pageNo={{.GetPrevPageNo}}'">上一页</button>
+    当前是第{{.PageNo}}页 共{{.TotalPageNo}}页,共{{.TotalRecord}}条记录
+    <button onclick="location.href='/manage/plan?pageNo={{.GetNextPageNo}}'" id="next">下一页</button>
+    <button onclick="location.href='/manage/plan?pageNo={{.TotalPageNo}}'">末页</button>
+    到第<input name="pn" id="pn_input" value="{{.PageNo}}"/>页
+    <input type="button" value="确定" onclick="goNew()" id="bt_input">
+</div>
+<script>
+    if ("{{.IsHasPrev}}" === "false") {
+        document.getElementById("prev").setAttribute("disabled", "disabled");
+    }
+
+    if ("{{.IsHasNext}}" === "false") {
+        document.getElementById("next").setAttribute("disabled", "disabled");
+    }
+
+    function goNew() {
+        const pageNo = document.getElementById("pn_input").value;
+        if (pageNo < 1 || pageNo > "{{.TotalPageNo}}") {
+            return
+        }
+        location.href = "/manage/plan?pageNo=" + pageNo;
+    }
+</script>
+</body>
+</html>

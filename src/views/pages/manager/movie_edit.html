@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <title>管理电影</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+    <style type="text/css">
+        h1 {
+            text-align: center;
+            margin-top: 200px;
+        }
+
+        h1 a {
+            color: red;
+        }
+
+        input {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="header">
+    <span class="wel_word">管理电影</span>
+    <div>
+        <a href="/manage/movie">返回</a>
+    </div>
+</div>
+
+<div id="main">
+    <form enctype="multipart/form-data" action="/manage/toAddOrUpdateMovie/addOrUpdateMovie" method="post" id="form">
+        <table>
+            <tr>
+                <td>电影名</td>
+                <td>上映时间</td>
+                <td>导演</td>
+                <td>类型</td>
+                <td>地区</td>
+                <td>主演</td>
+                <td>时长(分)</td>
+                <td>简介</td>
+                <td colspan="1">操作</td>
+            </tr>
+            <tr>
+                {{if .}}
+                <input name="movieID" type="hidden" class="movieID" value="{{.ID}}">
+                <td><input name="name" type="text" value="{{.Name}}"/></td>
+                <td><input name="upDate" type="date" value="{{.UpDate}}"/></td>
+                <td><input name="director" type="text" value="{{.Director}}"/></td>
+                <td><input name="type" type="text" value="{{.Type}}"/></td>
+                <td><input name="area" type="text" value="{{.Area}}"/></td>
+                <td><input name="star" type="text" value="{{.Star}}"/></td>
+                <td><input name="length" type="number" value="{{.Length}}"/></td>
+                <td><input name="intro" type="text" value="{{.Intro}}"/></td>
+                {{else}}
+                <td><input name="name" type="text"/></td>
+                <td><input name="upDate" type="date"/></td>
+                <td><input name="director" type="text"/></td>
+                <td><input name="type" type="text"/></td>
+                <td><input name="area" type="text"/></td>
+                <td><input name="star" type="text"/></td>
+                <td><input name="length" type="number"/></td>
+                <td><input name="intro" type="text"/></td>
+                {{end}}
+                <td><input name="imgPath" type="file" id="img"></td>
+                <td><input type="submit" value="提交" id="submit"/></td>
+            </tr>
+        </table>
+        {{if .}}
+        <p><img id="imgPath" src="{{.ImgPath}}" alt="预览" style="width: 200px;margin-left: 1000px"></p>
+        {{else}}
+        <p><img id="imgPath" src="" alt="预览" style="width: 200px;margin-left: 1000px"></p>
+        {{end}}
+    </form>
+</div>
+<script>
+    //预览
+    const imgNode = document.getElementById("img");
+    imgNode.onchange = function () {
+        const file = imgNode.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            document.getElementById("imgPath").src = this.result;
+        }
+    }
+    // json
+    // $("#submit").click(function () {
+    //     var formObject = {};
+    //     var formArray = $("#form").serializeArray();
+    //     $.each(formArray, function (i, item) {
+    //         formObject[item.name] = item.value;
+    //     });
+    //     formArray["movieID"] = parseInt(formArray["movieID"].value, 10)
+    //     $.ajax({
+    //         url: "/manage/toAddOrUpdateMovie/addOrUpdateMovie",
+    //         type: "post",
+    //         contentType: "application/json; charset=utf-8",
+    //         data: JSON.stringify(formObject),
+    //         dataType: "json",
+    //         success: function (data) {
+    //             alert(data.msg);
+    //         },
+    //         error: function (e) {
+    //             alert("错误！！");
+    //         }
+    //     });
+    // });
+</script>
+</body>
+</html>

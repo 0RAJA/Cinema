@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function Mai(obj) {
+            if (obj.className === "SeatOK") {
+                obj.className = "SeatError"
+                obj.style.backgroundColor = "red";
+            } else if (obj.className === "SeatError") {
+                obj.className = "SeatNone"
+                obj.style.backgroundColor = "gray";
+            } else {
+                obj.className = "SeatOK"
+                obj.style.backgroundColor = "blue";
+            }
+        }
+
+        window.onload = function () {
+            let xmlHttp;
+            const screenID = "{{.}}"
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            document.write(`<a href="/manage/screen">返回</a><br>`)
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    let text = xmlHttp.responseText;
+                    let data = JSON.parse(text)
+                    const ScreenName = data.screen.name;
+                    const Rows = data.screen.rows;
+                    const Cols = data.screen.cols;
+                    document.write(`<div style="border: #eb9316 solid 1px;width: 400px"><span>影厅名:` + ScreenName + `</span>&nbsp;<span>座位行数:` + Rows + `</span>&nbsp;<span>座位列数:` + Cols + `</span></div>`)
+                    document.write(`<button disabled style="background-color: blue;color: whitesmoke">正常</button>&nbsp;
+<button disabled style="background-color: red;color: whitesmoke"">损坏</button>&nbsp;
+<button disabled style="background-color: gray;color: whitesmoke"">走廊</button><br><br>`)
+                    for (let i = 1; i <= Rows; i++) {
+                        for (let j = 1; j <= Cols; j++) {
+                            const index = (i - 1) * Cols + (j - 1);
+                            if (data.seats[index].state === 2) {
+                                document.write(`<button class="SeatOK" style="width: 50px;height: 50px;background-color: blue" onclick="Mai(this)" id="` + data.seats[index].id + `"></button>` + `  `)
+                            } else if (data.seats[index].state === 3) {
+                                document.write(`<button class="SeatError" style="width: 50px;height: 50px;background-color: red" onclick="Mai(this)" id="` + data.seats[index].id + `"></button>` + `  `)
+                            } else {
+                                document.write(`<button class="SeatNone" style="width: 50px;height: 50px;background-color: gray" onclick="Mai(this)" id="` + data.seats[index].id + `"></button>` + `  `)
+                            }
+                        }
+                        document.write("<br>")
+                    }
+                    document.write(`<button onclick="Submit()">确定</button>`)
+                }
+            }
+            xmlHttp.open("GET", "/manage/getSeatsByScreenID?screenID=" + screenID, true);
+            xmlHttp.send();
+        }
+
+        function Submit() {
+            let list = [];
+            let seats = document.getElementsByClassName("SeatError");
+            for (let i = 0; i < seats.length; i++) {
+                let a = {
+                    id: parseInt(seats[i].id, 10),
+                    state: 3,
+                }
+                list.push(a);
+            }
+            seats = document.getElementsByClassName("SeatNone");
+            for (let i = 0; i < seats.length; i++) {
+                let a = {
+                    id: parseInt(seats[i].id, 10),
+                    state: 4,
+                }
+                list.push(a);
+            }
+            seats = document.getElementsByClassName("SeatOK");
+            for (let i = 0; i < seats.length; i++) {
+                let a = {
+                    id: parseInt(seats[i].id, 10),
+                    state: 2,
+                }
+                list.push(a);
+            }
+            const data = JSON.stringify(list);
+            //发送
+            let xmlHttp;
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    location.href = "http://localhost:8080/manage/screen"
+                }
+            }
+            xmlHttp.open("POST", "/manage/updateSeats", true);
+            xmlHttp.setRequestHeader("Content-type", "application/json");
+            xmlHttp.send(data);
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

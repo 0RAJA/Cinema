@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Regist &mdash; Paradise Cinema</title>
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.8.2/css/all.min.css">
+    <style>
+        body {
+            background-image: url("../../static/img/bg.jpg");
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <section class="section">
+        <div class="container mt-5">
+            <div class="rows">
+                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Regist</h4>
+                        </div>
+                        <div class="rows">
+                            <div class="col-lg-12 col-sm-12 col-xs-12" style="margin-left: 20px;margin-top: 20px">
+                                <span id="reply">{{.}}</span>
+                                <span><img src="/static/img/1.png" id="imgPath" style="width: 100px;margin-left: 300px"></span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="/regist" method="POST" class="needs-validation" novalidate=""
+                                  onsubmit="return IsOK()" enctype="multipart/form-data">
+                                <div class="rows">
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="username">用户名</label>
+                                        <input id="username" type="text" class="form-control" name="username" required
+                                               autofocus onchange="NameOK()">
+                                        <div class="invalid-feedback">
+                                            请填写用户名
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="img">头像</label>
+                                        <input id="img" type="file" class="form-control" name="imgPath" required>
+                                    </div>
+                                </div>
+
+                                <div class="rows">
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="email">邮箱</label>
+                                        <div class="input-group">
+                                            <input type="email" id="email" class="form-control col-12" name="email"
+                                                   pattern=".+@globex\.com">
+                                            <div class="invalid-feedback">
+                                                请填写邮箱
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="email">邮箱验证码</label>
+                                        <div class="input-group mb-3">
+                                            <input id="email_code" type="text" class="form-control" name="str"
+                                                   required>
+                                            <div class="input-group-append">
+                                                <button id="email_verify" class="btn btn-primary" type="button"
+                                                        onclick="SendMessage()">发送
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            请填写邮箱验证码
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rows">
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="password" class="d-block">密码</label>
+                                        <input id="password" type="password" class="form-control pwstrength"
+                                               data-indicator="pwindicator" required>
+                                        <div id="pwindicator" class="pwindicator">
+                                            <div class="bar"></div>
+                                            <div class="label"></div>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            请填写密码
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="repassword" class="d-block">确认密码</label>
+                                        <input id="repassword" type="password" class="form-control" name="password"
+                                               required onchange="PwdOK()">
+                                        <div class="invalid-feedback">
+                                            请再次填写密码
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rows">
+                                    <div class="form-group col-lg-12 col-sm-12 col-xs-12">
+                                        <label for="code" class="d-block">邀请码</label>
+                                        <input id="code" type="text" class="form-control pwstrength"
+                                               data-indicator="pwindicator" required placeholder="没有就不填" name="code">
+                                    </div>
+                                </div>
+                                <div class="rowtocol">
+                                    <div class="form-group form-group-label">
+                                        <div id="embed-captcha"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <button id="register-confirm"
+                                            class="btn btn-primary btn-lg btn-block">
+                                        注册
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-muted text-center">
+                        已经有账号了？<a href="/pages/user/login.html">马上登录 😁👉</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    nameOK = false
+    passwordOK = false
+    messageOK = false
+
+    function NameOK() {
+        let xmlHttp;
+        const username = document.getElementById("username").value;
+        if (username.length === 0) {
+            return
+        }
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                const flag = xmlHttp.response;
+                if (flag === "true") {
+                    document.getElementById("reply").innerHTML = "用户名可用";
+                    document.getElementById("reply").style.color = "green"
+                    nameOK = true
+                } else {
+                    document.getElementById("reply").innerHTML = "用户名不可用";
+                    document.getElementById("reply").style.color = "red"
+                    nameOK = false
+                }
+            }
+        }
+        xmlHttp.open("GET", "/checkUserName?username=" + username, true);
+        xmlHttp.send();
+    }
+
+    function PwdOK() {
+        var password = document.getElementById("password").value;
+        var rePassword = document.getElementById("repassword").value;
+        if (password !== rePassword) {
+            passwordOK = false
+            document.getElementById("reply").innerHTML = "密码不正确";
+            document.getElementById("reply").style.color = "red"
+        } else {
+            document.getElementById("reply").innerHTML = "...";
+            passwordOK = true
+        }
+    }
+
+    if (document.getElementById("reply").innerHTML.length === 5) {
+        document.getElementById("reply").innerHTML = "..."
+    } else {
+        document.getElementById("reply").style.color = "red"
+    }
+
+    function IsOK() {
+        return nameOK && passwordOK
+    }
+
+    //发送验证码
+    function SendMessage() {
+        let xmlHttp;
+        const email = document.getElementById("email").value;
+        if (email.length <= 0) {
+            alert("邮箱有误");
+            return
+        }
+        if (username.length === 0) {
+            return
+        }
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                const flag = xmlHttp.response;
+                if (flag === "true") {
+                    document.getElementById("reply").innerHTML = "验证码发送成功"
+                    document.getElementById("reply").style.color = "green"
+                } else {
+                    document.getElementById("reply").innerHTML = "验证码发送失败"
+                    document.getElementById("reply").style.color = "red"
+                }
+            }
+        }
+        xmlHttp.open("GET", "/sendMessage?email=" + email, true);
+        xmlHttp.send();
+    }
+
+    //预览
+    const imgNode = document.getElementById("img");
+    imgNode.onchange = function () {
+        const file = imgNode.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            document.getElementById("imgPath").src = this.result;
+        }
+    }
+</script>
+</body>
+
+</html>
