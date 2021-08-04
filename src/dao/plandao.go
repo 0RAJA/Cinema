@@ -2,6 +2,7 @@ package dao
 
 import (
 	"model"
+	"time"
 	"utils"
 )
 
@@ -9,6 +10,11 @@ import (
 func AddPlan(plan *model.Plan) error {
 	sql := "insert into plan (screen_id, movie_id, up_time, down_time, price) values (?,?,?,?,?);"
 	_, err := utils.DB.Exec(sql, plan.ScreenID, plan.MovieID, plan.UpTime, plan.DownTime, plan.Price)
+	if err != nil {
+		return err
+	}
+	sql2 := "select @@IDENTITY"
+	err = utils.DB.QueryRow(sql2).Scan(&plan.ID)
 	if err != nil {
 		return err
 	}
@@ -33,7 +39,6 @@ func AddPlan(plan *model.Plan) error {
 			PlanID:     plan.ID,
 			Row:        seats[i].Row,
 			Col:        seats[i].Col,
-			State:      seats[i].State,
 			UserID:     0,
 			ScreenName: screen.Name,
 			MovieName:  movie.Name,
@@ -41,6 +46,14 @@ func AddPlan(plan *model.Plan) error {
 			UpTime:     plan.UpTime,
 			DownTime:   plan.DownTime,
 			Price:      plan.Price,
+		}
+		switch seats[i].State {
+		case model.SeatOK:
+			ticket.State = model.TicketUnsold
+		case model.SeatError:
+			ticket.State = model.TicketError
+		case model.SeatNone:
+			ticket.State = model.TicketNone
 		}
 		tickets = append(tickets, &ticket)
 	}
@@ -81,12 +94,12 @@ func DeletePlansByScreenID(screenID int) error {
 	return err
 }
 
-// GetPagesPlans 获取分页计划
-func GetPagesPlans(pageNo int, planCondition *model.PlanCondition) (*model.Page, error) {
+// GetPagePlans 获取分页计划
+func GetPagePlans(pageNo int) (*model.Page, error) {
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
 	//获取总记录数和总页数
-	sql := "select count(*) from plan where screen_id = ? and movie_id = ? and up_time > ?;"
-	err := utils.DB.QueryRow(sql, planCondition.ScreenID, planCondition.MovieID, planCondition.UpTime).Scan(&page.TotalRecord)
+	sql := "select count(*) from plan;"
+	err := utils.DB.QueryRow(sql).Scan(&page.TotalRecord)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +108,8 @@ func GetPagesPlans(pageNo int, planCondition *model.PlanCondition) (*model.Page,
 		page.TotalPageNo++
 	}
 	//通过limit获取图书
-	sql = "select id, screen_id, movie_id, up_time, down_time, price from plan where screen_id = ? and movie_id = ? and up_time > ? limit ?,?;"
-	rows, err := utils.DB.Query(sql, planCondition.ScreenID, planCondition.MovieID, planCondition.UpTime, (page.PageNo-1)*page.PageSize, page.PageSize)
+	sql = "select id, screen_id, movie_id, up_time, down_time, price from plan limit ?,?;"
+	rows, err := utils.DB.Query(sql, (page.PageNo-1)*page.PageSize, page.PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -118,6 +131,7 @@ func GetPagesPlans(pageNo int, planCondition *model.PlanCondition) (*model.Page,
 			return nil, err
 		}
 		plan.MovieName = movie.Name
+		formatTime(&plan)
 		plans = append(plans, &plan)
 	}
 	page.Plans = plans
@@ -142,5 +156,44 @@ func GetPlanByID(planID int) (*model.Plan, error) {
 		return nil, err
 	}
 	plan.MovieName = movie.Name
+	formatTime(&plan)
 	return &plan, err
+}
+
+// UpdatePlan 更新时间还有价格
+func UpdatePlan(plan *model.Plan) error {
+	sql := "update plan set up_time = ?,down_time = ?,price = ? where id = ?"
+	_, err := utils.DB.Exec(sql, plan.UpTime, plan.DownTime, plan.Price, plan.ID)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+// GetAllPlans 获取所有plans
+func GetAllPlans() ([]*model.Plan, error) {
+	sql := "select id, screen_id, movie_id, up_time, down_time, price from plan"
+	rows, err := utils.DB.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	var plans []*model.Plan
+	for rows.Next() {
+		var plan model.Plan
+		err = rows.Scan(&plan.ID, &plan.ScreenID, &plan.MovieID, &plan.UpTime, &plan.DownTime, &plan.Price)
+		if err != nil {
+			return nil, err
+		}
+		formatTime(&plan)
+		plans = append(plans, &plan)
+	}
+	return plans, err
+}
+
+func formatTime(plan *model.Plan) {
+
+	t, _ := time.Parse(model.PlanTimeFormat, plan.UpTime)
+	plan.UpTimeFormat = t.Format(model.PlanTimeFormatOK)
+	t, _ = time.Parse(model.PlanTimeFormat, plan.DownTime)
+	plan.DownTimeFormat = t.Format(model.PlanTimeFormatOK)
 }

@@ -48,8 +48,18 @@ func main() {
 	http.HandleFunc("/manage/getSeatsByScreenID", controller.GetSeatsByScreenID)
 	//修改座位状态
 	http.HandleFunc("/manage/updateSeats", controller.UpdateSeats)
-	//管理剧目
+	//管理计划
 	http.HandleFunc("/manage/plan", controller.ManagePlan)
+	//去新增或更新计划
+	http.HandleFunc("/manage/toAddOrUpdatePlan", controller.ToAddOrUpdatePlan)
+	//获取电影和影厅信息
+	http.HandleFunc("/manage/getMoviesAndScreens", controller.GetMoviesAndScreens)
+	//检查计划时间是否冲突
+	http.HandleFunc("/manage/checkPlanTime", controller.CheckPlanTime)
+	//增加或者更新计划
+	http.HandleFunc("/manage/addOrUpdatePlan", controller.AddOrUpdatePlan)
+	//删除计划
+	http.HandleFunc("/manage/deletePlan", controller.DeletePlan)
 	//监听
-	http.ListenAndServe(":8080", nil)
+	_ = http.ListenAndServe(":8080", nil)
 }

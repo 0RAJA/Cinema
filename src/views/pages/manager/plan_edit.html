@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>hhh</title>
+</head>
+
+<body>
+<div>
+    <a href="/manage/plan">返回</a><br>
+    {{if .}}
+    <input hidden id="planID" type="hidden" value="{{.ID}}">
+    <span>
+        <label for="movieName">电影名
+            <select class="form-control" id="movieName">
+                <option selected value="{{.MovieID}}">{{.MovieName}}</option>
+            </select>
+        </label>
+    </span>
+    <span>
+        <label for="screenName">影厅名
+            <select class="form-control" id="screenName">
+                <option selected value="{{.ScreenID}}">{{.ScreenName}}</option>
+            </select>
+        </label>
+    </span>
+    <span>
+        <label for="upTime">开始时间
+            <input id="upTime" step="1" type="datetime-local" value="{{.UpTimeFormat}}">
+        </label>
+    </span>
+    <span>
+        <label for="downTime">结束时间
+            <input disabled id="downTime" step="1" type="datetime-local" value="{{.DownTimeFormat}}">
+        </label>
+    </span>
+    <span>
+        <label for="price">价格
+            <input id="price" type="number" value="{{.Price}}">元
+        </label>
+    </span>
+    {{else}}
+    <input hidden id="planID" type="hidden" value="0">
+    <span>
+        <label for="movieName">电影名
+            <select class="form-control" id="movieName">
+                <option selected value="0">--请选择--</option>
+            </select>
+        </label>
+    </span>
+    <span>
+        <label for="screenName">影厅名
+            <select class="form-control" id="screenName">
+                <option selected value="0">--请选择--</option>
+            </select>
+        </label>
+    </span>
+    <span>
+        <label for="upTime">开始时间
+            <input id="upTime" type="datetime-local">
+        </label>
+    </span>
+    <span>
+        <label for="downTime">结束时间
+            <input disabled id="downTime" type="datetime-local">
+        </label>
+    </span>
+    <span>
+        <label for="price">价格
+            <input id="price" type="number">元
+        </label>
+    </span>
+    {{end}}
+    <br>
+    <button onclick="submit()">提交</button>
+</div>
+{{if .}}
+<script>
+    window.onload = function () {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "false") {
+                    let text = xmlHttp.responseText;
+                    let data = JSON.parse(text);
+
+                }
+            }
+        }
+        xmlHttp.open("POST", "/manage/getMoviesAndScreens", true);
+        xmlHttp.send();
+    }
+</script>
+{{end}}
+<script>
+    IsOK = true
+
+    function submit() {
+        if (IsOK === false) {
+            return
+        }
+        const planID = parseInt(document.getElementById("planID").value, 10);
+        const movieID = parseInt(document.getElementById("movieName").value, 10);
+        const screenID = parseInt(document.getElementById("screenName").value, 10);
+        if (screenID === 0 || movieID === 0) {
+            return
+        }
+        const upTime = document.getElementById("upTime").value;
+        const downTime = document.getElementById("downTime").value;
+        const price = Number(document.getElementById("price").value);
+        let data = {
+            id: planID,
+            screen_id: screenID,
+            movie_id: movieID,
+            up_time_format: upTime,
+            down_time_format: downTime,
+            price: price
+        }
+        data = JSON.stringify(data);
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "false") {
+                    alert("修改失败");
+                }
+                location.href = "http://localhost:8080/manage/plan"
+            }
+        }
+        xmlHttp.open("POST", "/manage/addOrUpdatePlan", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.send(data);
+    }
+
+    document.getElementById("upTime").onchange = function () {
+        const movieID = parseInt(document.getElementById("movieName").value, 10);
+        const screenID = parseInt(document.getElementById("screenName").value, 10);
+        const upTime = document.getElementById("upTime").value;
+        const sendM = {
+            movie_id: movieID,
+            screen_id: screenID,
+            up_time_format: upTime
+        }
+        //发送
+        const data = JSON.stringify(sendM)
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text)
+                document.getElementById("downTime").value = data.down_time_format;
+                IsOK = data.is_ok;
+                if (IsOK === undefined) {
+                    IsOK = false;
+                    alert("时间冲突");
+                }
+            }
+        }
+        xmlHttp.open("POST", "/manage/checkPlanTime", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.send(data);
+    }
+</script>
+</body>
+</html>

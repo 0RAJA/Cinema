@@ -7,16 +7,9 @@
         .img img {
             height: 100px;
         }
-    </style>
-    <style>
-        #main {
-            position: relative;
-        }
 
-        #page_nav {
-            position: absolute;
-            bottom: 0px;
-            /*left:50px;*/
+        table tr td {
+            width: 100px;
         }
     </style>
 </head>
@@ -27,24 +20,22 @@
 <table id="main">
     <table>
         <tr>
-            <td>预览</td>
             <td>电影名</td>
             <td>影厅名</td>
-            <td>开始时间</td>
-            <td>结束时间</td>
+            <td style="width: 200px">开始时间</td>
+            <td style="width: 200px">结束时间</td>
             <td>价格</td>
             <td colspan="2">操作</td>
         </tr>
-        {{range .Movies}}
+        {{range .Plans}}
         <tr>
-            <td class="img"><img src="{{.ImgPath}}" alt="预览"></td>
             <td>{{.MovieName}}</td>
             <td>{{.ScreenName}}</td>
             <td>{{.UpTime}}</td>
             <td>{{.DownTime}}</td>
             <td>{{.Price}}</td>
             <td><a href="/manage/toAddOrUpdatePlan?planID={{.ID}}">修改</a></td>
-            <td><a href="/manage/deleteMovie?planID={{.ID}}">删除</a></td>
+            <td><a href="/manage/deletePlan?planID={{.ID}}">删除</a></td>
         </tr>
         {{end}}
         <tr>

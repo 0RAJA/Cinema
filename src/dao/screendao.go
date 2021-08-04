@@ -87,3 +87,22 @@ func GetPageScreens(pageNo int) (*model.Page, error) {
 	page.Screens = screens
 	return &page, err
 }
+
+// GetAllScreens 获取所有电影信息
+func GetAllScreens() ([]*model.Screen, error) {
+	sql := "select id, name, rows, cols, img_path  from screen;"
+	rows, err := utils.DB.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	var screens []*model.Screen
+	for rows.Next() {
+		var screen model.Screen
+		err := rows.Scan(&screen.ID, &screen.Name, &screen.Rows, &screen.Cols, &screen.ImgPath)
+		if err != nil {
+			return nil, err
+		}
+		screens = append(screens, &screen)
+	}
+	return screens, err
+}

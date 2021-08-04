@@ -178,7 +178,17 @@ func ManagePlan(w http.ResponseWriter, r *http.Request) {
 		Main(w, r)
 		return
 	}
-
+	pageNo, err := strconv.Atoi(r.FormValue("pageNo"))
+	if err != nil || pageNo <= 0 {
+		pageNo = 1
+	}
+	page, err := server.GetPagePlans(pageNo)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	t := template.Must(template.ParseFiles("src/views/pages/manager/plan.html"))
+	_ = t.Execute(w, page)
 }
 
 // ToAddOrUpdatePlan 去新增或者修改演出计划
@@ -188,6 +198,67 @@ func ToAddOrUpdatePlan(w http.ResponseWriter, r *http.Request) {
 		Main(w, r)
 		return
 	}
+	t := template.Must(template.ParseFiles("src/views/pages/manager/plan_edit.html"))
+	planID, err := strconv.Atoi(r.FormValue("planID"))
+	if planID <= 0 {
+		_ = t.Execute(w, false)
+		return
+	}
+	plan, err := server.GetPlanByID(planID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	_ = t.Execute(w, plan)
+}
+
+// GetMoviesAndScreens 获取电影和影厅信息
+func GetMoviesAndScreens(w http.ResponseWriter, r *http.Request) {
+	session, ok := server.IsLogin(r)
+	if ok == false || session == nil || session.Root != model.RootManager {
+		Main(w, r)
+		return
+	}
+	movieAndScreen, err := server.GetMoviesAndScreens()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	output, err := json.Marshal(&movieAndScreen)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(output)
+}
+
+// CheckPlanTime 检查计划时间是否冲突
+func CheckPlanTime(w http.ResponseWriter, r *http.Request) {
+	session, ok := server.IsLogin(r)
+	if ok == false || session == nil || session.Root != model.RootManager {
+		Main(w, r)
+		return
+	}
+	var planTImeMessage model.PlanTimeMessage
+	err := json.NewDecoder(r.Body).Decode(&planTImeMessage)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	reply, err := server.CheckPlanTime(&planTImeMessage)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	output, err := json.Marshal(reply)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, _ = w.Write(output)
 }
 
 // AddOrUpdatePlan 增加或者修改演出计划
@@ -197,14 +268,40 @@ func AddOrUpdatePlan(w http.ResponseWriter, r *http.Request) {
 		Main(w, r)
 		return
 	}
+	var planMessage model.AddOrUpdatePlanMessage
+	err := json.NewDecoder(r.Body).Decode(&planMessage)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = server.AddOrUpdatePlan(&planMessage)
+	w.WriteHeader(200)
+	if err != nil {
+		_, _ = w.Write([]byte("false"))
+		return
+	}
+	_, _ = w.Write([]byte("true"))
 }
 
+// DeletePlan 删除计划
 func DeletePlan(w http.ResponseWriter, r *http.Request) {
 	session, ok := server.IsLogin(r)
 	if ok == false || session == nil || session.Root != model.RootManager {
 		Main(w, r)
 		return
 	}
+	planID, err := strconv.Atoi(r.FormValue("planID"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = server.DeletePlanByID(planID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	ManagePlan(w, r)
 }
 
 // ManageMovie 管理电影
