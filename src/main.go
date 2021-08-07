@@ -10,6 +10,8 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("src/views/static"))))
 	//去html页面
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("src/views/pages"))))
+	//去bootstrap
+	http.Handle("/bootstrap/", http.StripPrefix("/bootstrap/", http.FileServer(http.Dir("src/views/bootstrap"))))
 	//找图片
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("src/views/img"))))
 	//去登录
@@ -60,6 +62,18 @@ func main() {
 	http.HandleFunc("/manage/addOrUpdatePlan", controller.AddOrUpdatePlan)
 	//删除计划
 	http.HandleFunc("/manage/deletePlan", controller.DeletePlan)
+	//顾客首页
+	http.HandleFunc("/client/main", controller.ClientMain)
+	//获取票房
+	http.HandleFunc("/client/getAllBoxes", controller.GetAllBoxes)
+	//获取单个电影信息
+	http.HandleFunc("/client/getMovieMessage", controller.GetMovieMessage)
+	//获取分页电影信息
+	http.HandleFunc("/client/getPageMovies", controller.GetPageMovies)
+	//根据电影名获取分页电影信息
+	http.HandleFunc("/client/getPageMoviesByName", controller.GetPageMoviesByName)
+	//评分
+	http.HandleFunc("/client/scoring", controller.Scoring)
 	//监听
 	_ = http.ListenAndServe(":8080", nil)
 }

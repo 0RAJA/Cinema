@@ -1,7 +1,7 @@
 package model
 
 const (
-	// PlanTimeFormat 计划开始时间
+	// PlanTimeFormat 计划时间
 	PlanTimeFormat   = `2006-01-02 15:04:05`
 	PlanTimeFormatOK = `2006-01-02T15:04:05`
 )

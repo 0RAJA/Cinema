@@ -13,7 +13,7 @@ func AddPlan(plan *model.Plan) error {
 	if err != nil {
 		return err
 	}
-	sql2 := "select @@IDENTITY"
+	sql2 := "SELECT max(id) from plan"
 	err = utils.DB.QueryRow(sql2).Scan(&plan.ID)
 	if err != nil {
 		return err
@@ -190,10 +190,30 @@ func GetAllPlans() ([]*model.Plan, error) {
 	return plans, err
 }
 
+//一键填充并格式化时间
 func formatTime(plan *model.Plan) {
-
 	t, _ := time.Parse(model.PlanTimeFormat, plan.UpTime)
 	plan.UpTimeFormat = t.Format(model.PlanTimeFormatOK)
 	t, _ = time.Parse(model.PlanTimeFormat, plan.DownTime)
 	plan.DownTimeFormat = t.Format(model.PlanTimeFormatOK)
+}
+
+// GetPlansByScreenAndMovie 通过影厅和电影筛选计划
+func GetPlansByScreenAndMovie(screenID, movieID int) ([]*model.Plan, error) {
+	sql := "select id, screen_id, movie_id, up_time, down_time, price from plan where screen_id = ? and movie_id = ?"
+	rows, err := utils.DB.Query(sql, screenID, movieID)
+	if err != nil {
+		return nil, err
+	}
+	var plans []*model.Plan
+	for rows.Next() {
+		var plan model.Plan
+		err = rows.Scan(&plan.ID, &plan.ScreenID, &plan.MovieID, &plan.UpTime, &plan.DownTime, &plan.Price)
+		if err != nil {
+			return nil, err
+		}
+		formatTime(&plan)
+		plans = append(plans, &plan)
+	}
+	return plans, err
 }

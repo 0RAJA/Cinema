@@ -80,7 +80,7 @@ func GetMoviesAndScreens() (*model.MovieAndScreen, error) {
 
 // CheckPlanTime 检查时间合法性
 func CheckPlanTime(message *model.PlanTimeMessage) (*model.ReplyTimeMessage, error) {
-	plans, err := dao.GetAllPlans()
+	plans, err := dao.GetPlansByScreenAndMovie(message.ScreenID, message.MovieID)
 	if err != nil {
 		log.Println(err)
 		return &model.ReplyTimeMessage{}, nil

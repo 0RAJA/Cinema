@@ -15,7 +15,7 @@ import (
 // ManageMain 管理员主页
 func ManageMain(w http.ResponseWriter, r *http.Request) {
 	session, ok := server.IsLogin(r)
-	if ok == false || session == nil {
+	if ok == false || session == nil || session.Root != model.RootManager {
 		Main(w, r)
 		return
 	}
@@ -278,6 +278,7 @@ func AddOrUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	err = server.AddOrUpdatePlan(&planMessage)
 	w.WriteHeader(200)
 	if err != nil {
+		fmt.Println(err)
 		_, _ = w.Write([]byte("false"))
 		return
 	}

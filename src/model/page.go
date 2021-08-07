@@ -2,15 +2,15 @@ package model
 
 // Page 需要当前页的数据,当前页数,每页记录数,总页数,总记录数
 type Page struct {
-	Movies      []*Movie //每页查询出来的电影存放的切片
-	Screens     []*Screen
-	Plans       []*Plan
-	PageNo      int    //当前页
-	PageSize    int    //每页显示的条数
-	TotalPageNo int    //总页数
-	TotalRecord int    //总记录数
-	Min         string //最小
-	Max         string //最大
+	Movies      []*Movie  `json:"movies,omitempty"` //每页查询出来的电影存放的切片
+	Screens     []*Screen `json:"-"`
+	Plans       []*Plan   `json:"-"`
+	PageNo      int       `json:"page_no,omitempty"`       //当前页
+	PageSize    int       `json:"page_size,omitempty"`     //每页显示的条数
+	TotalPageNo int       `json:"total_page_no,omitempty"` //总页数
+	TotalRecord int       `json:"total_record,omitempty"`  //总记录数
+	Min         string    `json:"min,omitempty"`           //最小
+	Max         string    `json:"max,omitempty"`           //最大
 }
 
 // IsHasPrev 是否有上一页

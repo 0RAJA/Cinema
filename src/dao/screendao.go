@@ -12,7 +12,7 @@ func AddScreen(screen *model.Screen) error {
 	if err != nil {
 		return err
 	}
-	sql2 := "select @@IDENTITY"
+	sql2 := "select max(id) from screen"
 	err = utils.DB.QueryRow(sql2).Scan(&screen.ID)
 	if err != nil {
 		return err

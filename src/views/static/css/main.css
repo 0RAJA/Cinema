@@ -572,11 +572,11 @@ input[type=radio] + label:before {
     display: block
 }
 
-.image.left, .image.right {
+.image.left, .image.left {
     max-width: 40%
 }
 
-.image.left img, .image.right img {
+.image.left img, .image.left img {
     width: 100%
 }
 
@@ -586,7 +586,7 @@ input[type=radio] + label:before {
     top: .25em
 }
 
-.image.right {
+.image.left {
     float: right;
     padding: 0 0 1em 1.5em;
     top: .25em

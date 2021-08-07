@@ -60,12 +60,12 @@
     </span>
     <span>
         <label for="upTime">开始时间
-            <input id="upTime" type="datetime-local">
+            <input id="upTime" step="1" type="datetime-local">
         </label>
     </span>
     <span>
         <label for="downTime">结束时间
-            <input disabled id="downTime" type="datetime-local">
+            <input disabled id="downTime" step="1" type="datetime-local">
         </label>
     </span>
     <span>
@@ -78,27 +78,39 @@
     <button onclick="submit()">提交</button>
 </div>
 {{if .}}
-<script>
-    window.onload = function () {
-        let xmlHttp;
-        if (window.XMLHttpRequest) {
-            xmlHttp = new XMLHttpRequest();
-        } else {
-            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlHttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                if (xmlHttp.response === "false") {
+{{else}}
+    <script>
+        window.onload = function () {
+            let xmlHttp;
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
                     let text = xmlHttp.responseText;
                     let data = JSON.parse(text);
-
+                    for (let i = 0; i < data.movies.length; i++) {
+                        let selectNode = document.getElementById("movieName");
+                        let x = document.createElement("option")
+                        x.innerHTML = data.movies[i].name;
+                        x.value = data.movies[i].movieID;
+                        selectNode.appendChild(x);
+                    }
+                    for (let i = 0; i < data.screens.length; i++) {
+                        let selectNode = document.getElementById("screenName");
+                        let x = document.createElement("option")
+                        x.innerHTML = data.screens[i].name;
+                        x.value = data.screens[i].id;
+                        selectNode.appendChild(x);
+                    }
                 }
             }
+            xmlHttp.open("POST", "/manage/getMoviesAndScreens", true);
+            xmlHttp.send();
         }
-        xmlHttp.open("POST", "/manage/getMoviesAndScreens", true);
-        xmlHttp.send();
-    }
-</script>
+    </script>
 {{end}}
 <script>
     IsOK = true
@@ -111,6 +123,7 @@
         const movieID = parseInt(document.getElementById("movieName").value, 10);
         const screenID = parseInt(document.getElementById("screenName").value, 10);
         if (screenID === 0 || movieID === 0) {
+            alert("请选择电影和影厅");
             return
         }
         const upTime = document.getElementById("upTime").value;
@@ -147,6 +160,10 @@
     document.getElementById("upTime").onchange = function () {
         const movieID = parseInt(document.getElementById("movieName").value, 10);
         const screenID = parseInt(document.getElementById("screenName").value, 10);
+        if (movieID === 0 || screenID === 0) {
+            alert("请选择电影和影厅");
+            return
+        }
         const upTime = document.getElementById("upTime").value;
         const sendM = {
             movie_id: movieID,
