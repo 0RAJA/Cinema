@@ -2,6 +2,7 @@ package controller
 
 import (
 	"dao"
+	"encoding/json"
 	"log"
 	"model"
 	"net/http"
@@ -158,4 +159,25 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		_, _ = w.Write([]byte("false"))
 	}
+}
+
+// GetUserMessage 获取用户信息
+func GetUserMessage(w http.ResponseWriter, r *http.Request) {
+	session, ok := server.IsLogin(r)
+	if ok == false || session == nil {
+		Main(w, r)
+		return
+	}
+	user, err := server.GetUserByID(session.UserID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	output, err := json.Marshal(user)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(output)
 }

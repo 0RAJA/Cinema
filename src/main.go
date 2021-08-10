@@ -98,6 +98,8 @@ func main() {
 	http.HandleFunc("/user/updateImg", controller.UpdateImg)
 	//更新邮箱
 	http.HandleFunc("/user/updateEmail", controller.UpdateEmail)
+	//获取用户信息
+	http.HandleFunc("/user/getUserMessage", controller.GetUserMessage)
 	//监听
 	_ = http.ListenAndServe(":8080", nil)
 }

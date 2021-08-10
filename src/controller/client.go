@@ -334,6 +334,7 @@ func GetUserTickets(w http.ResponseWriter, r *http.Request) {
 	_ = t.Execute(w, tickets)
 }
 
+// ReturnTicket 退票
 func ReturnTicket(w http.ResponseWriter, r *http.Request) {
 	session, ok := server.IsLogin(r)
 	if ok == false || session == nil || session.Root != model.RootClient {

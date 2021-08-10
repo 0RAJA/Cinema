@@ -74,27 +74,23 @@
 <div class="header">
     <div class="nav">
         <ul class="navbar">
-            <li><a data-act="home-click" href="/">首页</a></li>
-            <li><a data-act="movies-click" href="/films">电影</a></li>
+            <li><a href="#" onclick="window.history.back()">返回</a></li>
+            <li><a data-act="home-click" href="/client/main">首页</a></li>
         </ul>
     </div>
 
-    <div class="user-info">
-        <div class="user-avatar has-login">
-            <img src="https://img.meituan.net/maoyanuser/6d4d0283e5b7cc67b90ede89cc09eacb12512.jpg">
-            <span class="caret"></span>
-            <ul class="user-menu yes-login-menu">
-                <li class="text"><a href="/profile/orders">我的订单</a></li>
-                <li class="text login-name" title="顺着你指的方向"><a href="javascript:void 0">基本信息</a></li>
-                <li class="text"><a class="J-logout" data-act="logout-click" href="javascript:void 0">退出登录</a></li>
-            </ul>
+    <div class="user-info" style="width: 200px">
+        <div class="user-avatar has-login" style="width: 200px;height: 0px">
+            <img alt="" height="50px"
+                 id="head" src="" width="50px">
+            <span>欢迎<span id="myName"></span>到来</span>
+            <dl>
+                <dt class="text"><a href="/client/order">我的订单</a></dt>
+                <dt class="text login-name"><a href="/profile">基本信息</a></dt>
+                <dt class="text"><a href="/logout">退出登录</a></dt>
+            </dl>
         </div>
     </div>
-
-    <form action="/query" class="search-form" data-actform="search-click" target="_blank">
-        <input autocomplete="off" class="search" maxlength="32" name="kw" placeholder="找电影" type="search">
-        <input class="submit" type="submit" value="">
-    </form>
 
 </div>
 <div class="header-placeholder"></div>
@@ -399,6 +395,27 @@
         xmlHttp.open("POST", "/client/takeTickets", true);
         xmlHttp.send(outPut);
     }
+
+    function GetUser() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                document.getElementById("head").src = data.imgPath;
+                document.getElementById("myName").innerHTML = data.name;
+            }
+        }
+        xmlHttp.open("GET", "/user/getUserMessage", true);
+        xmlHttp.send();
+    }
+
+    GetUser();
 </script>
 </body>
 </html>
