@@ -1,10 +1,404 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<!--[if IE 8]>
+<html class="ie8"><![endif]-->
+<!--[if IE 9]>
+<html class="ie9"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html><!--<![endif]-->
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>选座</title>
+
+    <link href="//p0.meituan.net" rel="dns-prefetch"/>
+    <link href="//p1.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms0.meituan.net" rel="dns-prefetch"/>
+    <link href="//s0.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms1.meituan.net" rel="dns-prefetch"/>
+    <link href="//analytics.meituan.com" rel="dns-prefetch"/>
+    <link href="//report.meituan.com" rel="dns-prefetch"/>
+    <link href="//frep.meituan.com" rel="dns-prefetch"/>
+
+
+    <meta charset="utf-8">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="yes" http-equiv="cleartype"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="webkit" name="renderer"/>
+
+    <meta content="true" name="HandheldFriendly"/>
+    <meta content="email=no" name="format-detection"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/common.6b1d782c.css"
+          rel="stylesheet"/>
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/cinemas-seat.b8adee6e.css"
+          rel="stylesheet"/>
+    <script crossorigin="anonymous"
+            src="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/stat.88d57c80.js"></script>
+    <script>if (window.devicePixelRatio >= 2) {
+        document.write('<link rel="stylesheet" href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/image-2x.8ba7074d.css"/>')
+    }</script>
+    <style>
+        @font-face {
+            font-family: stonefont;
+            src: url('//vfile.meituan.net/colorstone/e57d8e298a4f5a205c1ac65a64b3c71e3424.eot');
+            src: url('//vfile.meituan.net/colorstone/e57d8e298a4f5a205c1ac65a64b3c71e3424.eot?#iefix') format('embedded-opentype'),
+            url('//vfile.meituan.net/colorstone/94cdd5f587e2a50e93af2a479a2b1fb52272.woff') format('woff');
+        }
+
+        .broken_example {
+            background-image: url("/static/img/BROKEN.png");
+            width: 102px;
+            height: 30px;
+        }
+
+
+        .seats-block .seat.broken {
+            background-image: url("/static/img/BROKEN.png");
+            width: 33px;
+            height: 28px;
+        }
+
+        /*
+            selectable 可选
+            selected 已选
+            sold 已售
+            empty 空
+        */
+    </style>
 </head>
 <body>
 
+
+<div class="header">
+    <div class="nav">
+        <ul class="navbar">
+            <li><a data-act="home-click" href="/">首页</a></li>
+            <li><a data-act="movies-click" href="/films">电影</a></li>
+        </ul>
+    </div>
+
+    <div class="user-info">
+        <div class="user-avatar has-login">
+            <img src="https://img.meituan.net/maoyanuser/6d4d0283e5b7cc67b90ede89cc09eacb12512.jpg">
+            <span class="caret"></span>
+            <ul class="user-menu yes-login-menu">
+                <li class="text"><a href="/profile/orders">我的订单</a></li>
+                <li class="text login-name" title="顺着你指的方向"><a href="javascript:void 0">基本信息</a></li>
+                <li class="text"><a class="J-logout" data-act="logout-click" href="javascript:void 0">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <form action="/query" class="search-form" data-actform="search-click" target="_blank">
+        <input autocomplete="off" class="search" maxlength="32" name="kw" placeholder="找电影" type="search">
+        <input class="submit" type="submit" value="">
+    </form>
+
+</div>
+<div class="header-placeholder"></div>
+<div class="container" class="page-cinemas/seat" id="app">
+    <div class="main clearfix">
+        <div class="hall">
+            <div class="seat-example">
+                <div class="selectable-example example">
+                    <span>可选座位</span>
+                </div>
+                <div class="sold-example example">
+                    <span>已售座位</span>
+                </div>
+                <div class="selected-example example">
+                    <span>已选座位</span>
+                </div>
+                <div class="example broken_example">
+                    <span>损坏座位</span>
+                </div>
+            </div>
+
+            <div class="seats-block" data-cols="21" data-section-id="0"
+                 data-seq-no="202108080430009">
+                <div class="row-id-container" id="row">
+                </div>
+
+                <div class="seats-container">
+                    <div class="screen-container">
+                        <div class="screen">银幕中央</div>
+                        <div class="c-screen-line"></div>
+                    </div>
+
+                    <div class="seats-wrapper" id="seat">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side">
+            <div class="movie-info clearfix">
+                <div class="poster">
+                    <img alt="电影图片" id="imgPath" src="">
+                </div>
+                <div class="content">
+                    <p class="name text-ellipsis" id="movieName"></p>
+                    <div class="info-item">
+                        <span>类型 :</span>
+                        <span class="value" id="type"></span>
+                    </div>
+                    <div class="info-item">
+                        <span>时长 :</span>
+                        <span class="value" id="length"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="show-info">
+                <div class="info-item">
+                    <span>影院 :</span>
+                    <span class="value text-ellipsis">电影院</span>
+                </div>
+                <div class="info-item">
+                    <span>影厅 :</span>
+                    <span class="value text-ellipsis">{{.ScreenName}}</span>
+                </div>
+                <div class="info-item">
+                    <span>版本 :</span>
+                    <span class="value text-ellipsis">国语2D</span>
+                </div>
+                <div class="info-item">
+                    <span>场次 :</span>
+                    <span class="value text-ellipsis screen">{{.UpTime}}</span>
+                </div>
+                <div class="info-item">
+                    <span>票价 :</span>
+                    <span class="value text-ellipsis">￥{{.Price}}/张</span>
+                </div>
+            </div>
+
+            <div class="ticket-info">
+                <div class="no-ticket">
+                    <p class="buy-limit">座位：一次最多选5个座位</p>
+                    <p class="no-selected">请<span>点击左侧</span>座位图选择座位</p>
+                </div>
+                <div class="has-ticket" style="display:none">
+                    <span class="text">座位：</span>
+                </div>
+                <div id="tickets">
+
+                </div>
+                <div class=" total-price">
+                    <span>总价 :</span>
+                    <span class="price" id="SumMoney">0</span>
+                </div>
+            </div>
+
+            <div class="confirm-order">
+                <div class="confirm-btn disable" id="submit" onclick="MySubmit()">确认选座</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("submit").classList.add("disable");
+    let array = new Array(0);
+    // 获取电影信息
+    window.onload = function () {
+        let rows, cols;
+        let ticketCnt = 0;//选的票数
+        let price = parseFloat("{{.Price}}");
+
+        function GetMovieByID() {
+            let xmlHttp;
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    let text = xmlHttp.responseText;
+                    let data = JSON.parse(text);
+                    document.getElementById("imgPath").src = data.imgPath;
+                    document.getElementById("movieName").innerHTML = data.name;
+                    document.getElementById("type").innerHTML = data.type;
+                    document.getElementById("length").innerHTML = data.length;
+                    document.getElementById("movieName").innerHTML = data.name;
+                }
+            }
+            xmlHttp.open("POST", "/client/getMovieByID?movieID={{.MovieID}}", true);
+            xmlHttp.send();
+        }
+
+        GetMovieByID();
+
+        //获取影厅信息
+        function GetScreen() {
+            let xmlHttp;
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    let text = xmlHttp.responseText;
+                    let data = JSON.parse(text);
+                    let rowNode = document.getElementById("row");
+                    rows = data.rows;
+                    cols = data.cols;
+                    for (let i = 1; i <= rows; i++) {
+                        let span = document.createElement("span");
+                        span.setAttribute("class", "row-id");
+                        span.innerHTML = i;
+                        rowNode.appendChild(span);
+                    }
+                }
+            }
+            xmlHttp.open("POST", "/client/getScreen?screenID={{.ScreenID}}", true);
+            xmlHttp.send();
+        }
+
+        GetScreen();
+
+        //选票
+        function SelectTicket(id, row, col) {
+            document.getElementById("submit").classList.remove("disable");
+
+            array.push({
+                id: parseInt(id, 10),
+                row: row,
+                col: col
+            })
+            let tickets = document.getElementById("tickets");
+            let span = document.createElement("span");
+            span.setAttribute("class", "ticket");
+            span.setAttribute("seat_id", id);
+            span.onclick = function () {
+                ticketCnt--;
+                NoSelectTicket(id);
+                let seatNode = document.getElementById(id);
+                seatNode.className = "seat selectable";
+                CountMoney();
+            }
+            span.innerHTML = row + "排" + col + "座";
+            tickets.appendChild(span);
+        }
+
+        //不选票
+        function NoSelectTicket(id) {
+            let submit = document.getElementById("submit");
+            if (array.length === 1) {
+                submit.classList.add("disable");
+            }
+            let ret = new Array(0);
+            for (let i = 0; i < array.length; i++) {
+                if (array[i].id !== parseInt(id, 10)) {
+                    ret.push(array[i]);
+                }
+            }
+            let tickets = document.getElementsByClassName("ticket");
+            for (let i = 0; i < tickets.length; i++) {
+                if (tickets[i].getAttribute("seat_id") === id) {
+                    document.getElementById("tickets").removeChild(tickets[i]);
+                }
+            }
+            array = ret;
+        }
+
+        //计算价格
+        function CountMoney() {
+            document.getElementById("SumMoney").innerHTML = (array.length * price).toString();
+        }
+
+        // 获取票信息
+        function GetTicketsByID() {
+            let xmlHttp;
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    let text = xmlHttp.responseText;
+                    let data = JSON.parse(text);
+                    let seats = document.getElementById("seat");
+                    let index = 0;
+                    for (let i = 0; i < rows; i++) {
+                        let div = document.createElement("div");
+                        div.setAttribute("class", "row");
+                        for (let j = 0; j < cols; j++) {
+                            let span = document.createElement("span")
+                            span.id = data[index].id;
+                            span.onclick = function () {
+                                let seatNode = document.getElementById(span.id);
+                                if (seatNode.className === "seat selectable") {
+                                    if (ticketCnt >= 5) {
+                                        alert("不能再选了!");
+                                        return
+                                    }
+                                    SelectTicket(seatNode.id, parseInt(seatNode.firstElementChild.innerHTML, 10), parseInt(seatNode.lastElementChild.innerHTML, 10));
+                                    seatNode.className = "seat selected";
+                                    ticketCnt++;
+                                } else if (seatNode.className === "seat selected") {
+                                    ticketCnt--;
+                                    NoSelectTicket(seatNode.id);
+                                    seatNode.className = "seat selectable";
+                                }
+                                CountMoney();
+                            };
+                            if (data[index].state === 2) {
+                                span.setAttribute("class", "seat selectable");
+                            } else if (data[index].state === 3) {
+                                span.setAttribute("class", "seat sold");
+                            } else if (data[index].state === 4) {
+                                span.setAttribute("class", "seat broken");
+                            } else {
+                                span.setAttribute("class", "seat empty");
+                            }
+                            let hang = document.createElement("span");
+                            hang.setAttribute("class", "hang");
+                            hang.innerHTML = data[index].row;
+                            let lie = document.createElement("span");
+                            lie.setAttribute("class", "lie");
+                            lie.innerHTML = data[index].col;
+                            span.appendChild(hang);
+                            span.appendChild(lie);
+                            div.appendChild(span);
+                            index++;
+                        }
+                        seats.appendChild(div);
+                    }
+                }
+            }
+            xmlHttp.open("POST", "/client/getTickets?planID={{.ID}}", true);
+            xmlHttp.send();
+        }
+
+        GetTicketsByID();
+    }
+
+    function MySubmit() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "true") {
+                    location.href = "/client/order";
+                } else {
+                    alert("购票失败");
+                    location.reload();
+                }
+            }
+        }
+        let outPut = JSON.stringify(array);
+        xmlHttp.open("POST", "/client/takeTickets", true);
+        xmlHttp.send(outPut);
+    }
+</script>
 </body>
 </html>

@@ -74,6 +74,30 @@ func main() {
 	http.HandleFunc("/client/getPageMoviesByName", controller.GetPageMoviesByName)
 	//评分
 	http.HandleFunc("/client/scoring", controller.Scoring)
+	//获取演出计划
+	http.HandleFunc("/client/getPlansByMovieIDAndTime", controller.GetPlansByMovieIDAndTime)
+	//获取单个电影信息
+	http.HandleFunc("/client/getMovieByID", controller.GetMovieByID)
+	//去选座界面
+	http.HandleFunc("/client/toTakeTickets", controller.ToTakeTickets)
+	//获取票
+	http.HandleFunc("/client/getTickets", controller.GetTickets)
+	//获取影厅信息
+	http.HandleFunc("/client/getScreen", controller.GetScreen)
+	//卖票
+	http.HandleFunc("/client/takeTickets", controller.TakeTickets)
+	//订单
+	http.HandleFunc("/client/order", controller.GetUserTickets)
+	//退票
+	http.HandleFunc("/client/returnTicket", controller.ReturnTicket)
+	//基本信息
+	http.HandleFunc("/profile", controller.Profile)
+	//更新用户信息
+	http.HandleFunc("/user/updateMessage", controller.UpdateMessage)
+	//更新头像
+	http.HandleFunc("/user/updateImg", controller.UpdateImg)
+	//更新邮箱
+	http.HandleFunc("/user/updateEmail", controller.UpdateEmail)
 	//监听
 	_ = http.ListenAndServe(":8080", nil)
 }

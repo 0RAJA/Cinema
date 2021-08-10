@@ -30,3 +30,7 @@ func AddScreen(screen *model.Screen) error {
 func DeleteScreenByID(screenID int) error {
 	return dao.DeleteScreenByID(screenID)
 }
+
+func GetScreenByID(screenID int) (*model.Screen, error) {
+	return dao.GetScreenByID(screenID)
+}

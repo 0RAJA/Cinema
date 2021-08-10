@@ -49,8 +49,8 @@ func UpdateTicket(ticket *model.Ticket) error {
 
 // GetTicketsByPlanID 通过planID获取票
 func GetTicketsByPlanID(planID int) ([]*model.Ticket, error) {
-	sql := "select id, screen_id, movie_id, plan_id, row, col, state, user_id from ticket;"
-	rows, err := utils.DB.Query(sql)
+	sql := "select id, screen_id, movie_id, plan_id, row, col, state, user_id from ticket where plan_id = ?;"
+	rows, err := utils.DB.Query(sql, planID)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func GetTicketsByPlanID(planID int) ([]*model.Ticket, error) {
 			isTrue = false
 		}
 		if ticket.State == model.TicketSold {
-			user, err := GetUserByID(ticket.ID)
+			user, err := GetUserByID(ticket.UserID)
 			if err != nil {
 				return nil, err
 			}
@@ -78,4 +78,34 @@ func GetTicketsByPlanID(planID int) ([]*model.Ticket, error) {
 		tickets = append(tickets, &ticket)
 	}
 	return tickets, err
+}
+
+// GetTicketByID 通过ID查询ticket信息
+func GetTicketByID(ticketID int) (*model.Ticket, error) {
+	sql := "select t.id, t.screen_id, t.movie_id, t.plan_id, t.row, t.col, t.state, t.user_id,m.name,s.name,p.up_time,p.down_time,p.price from ticket t join movie m on m.id = t.movie_id join screen s on s.id = t.screen_id join plan p on p.id = t.plan_id where t.id = ?;"
+	var ticket model.Ticket
+	err := utils.DB.QueryRow(sql, ticketID).Scan(&ticket.ID, &ticket.ScreenID, &ticket.MovieID, &ticket.PlanID, &ticket.Row, &ticket.Col, &ticket.State, &ticket.UserID, &ticket.MovieName, &ticket.ScreenName, &ticket.UpTime, &ticket.DownTime, &ticket.Price)
+	if err != nil {
+		return nil, err
+	}
+	return &ticket, err
+}
+
+// GetTicketsByUserID 通过UserID获取票
+func GetTicketsByUserID(userID int) ([]*model.Ticket, error) {
+	sql := "select t.id, t.screen_id, t.movie_id, t.plan_id, t.row, t.col, t.state, t.user_id,m.name,s.name,p.up_time,p.down_time,p.price,u.name from ticket t join movie m on m.id = t.movie_id join screen s on s.id = t.screen_id join plan p on p.id = t.plan_id join users u on u.id = t.user_id where t.user_id = ? and t.state = ?;"
+	var tickets []*model.Ticket
+	rows, err := utils.DB.Query(sql, userID, model.TicketSold)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var ticket model.Ticket
+		err := rows.Scan(&ticket.ID, &ticket.ScreenID, &ticket.MovieID, &ticket.PlanID, &ticket.Row, &ticket.Col, &ticket.State, &ticket.UserID, &ticket.MovieName, &ticket.ScreenName, &ticket.UpTime, &ticket.DownTime, &ticket.Price, &ticket.UserName)
+		if err != nil {
+			return nil, err
+		}
+		tickets = append(tickets, &ticket)
+	}
+	return tickets, nil
 }

@@ -217,3 +217,23 @@ func GetPlansByScreenAndMovie(screenID, movieID int) ([]*model.Plan, error) {
 	}
 	return plans, err
 }
+
+// GetPlansByMovie 通过电影名筛选演出计划
+func GetPlansByMovie(movieID int) ([]*model.Plan, error) {
+	sql := "select p.id, p.screen_id, p.movie_id, p.up_time, p.down_time, p.price,m.name,s.name from plan p join movie m on p.movie_id = m.id join screen s on s.id = p.screen_id where movie_id = ?"
+	rows, err := utils.DB.Query(sql, movieID)
+	if err != nil {
+		return nil, err
+	}
+	var plans []*model.Plan
+	for rows.Next() {
+		var plan model.Plan
+		err = rows.Scan(&plan.ID, &plan.ScreenID, &plan.MovieID, &plan.UpTime, &plan.DownTime, &plan.Price, &plan.MovieName, &plan.ScreenName)
+		if err != nil {
+			return nil, err
+		}
+		formatTime(&plan)
+		plans = append(plans, &plan)
+	}
+	return plans, err
+}

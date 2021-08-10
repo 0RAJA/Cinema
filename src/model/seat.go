@@ -1,9 +1,9 @@
 package model
 
 const (
-	SeatOK    = iota + 2 //可以生成票的座位
-	SeatError            //不能生成票的坏座位
-	SeatNone             //走廊
+	SeatOK    = 2 //可以生成票的座位
+	SeatError = 3 //不能生成票的坏座位
+	SeatNone  = 4 //走廊
 )
 
 // Seat 座位

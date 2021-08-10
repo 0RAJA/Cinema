@@ -8,22 +8,17 @@ const (
 
 // Plan 演出计划
 type Plan struct {
-	ID             int
-	ScreenID       int
-	MovieID        int
-	UpTime         string
-	DownTime       string
-	Price          float64 //--
-	ScreenName     string
-	MovieName      string
-	UpTimeFormat   string //给前端看的
-	DownTimeFormat string
-}
-
-// PlanCondition 演出计划查询条件
-type PlanCondition struct {
-	ScreenName int
-	MovieName  int
+	ID             int     `json:"id,omitempty"`
+	ScreenID       int     `json:"screen_id,omitempty"`
+	MovieID        int     `json:"movie_id,omitempty"`
+	UpTime         string  `json:"up_time,omitempty"`
+	DownTime       string  `json:"down_time,omitempty"`
+	Price          float64 `json:"price,omitempty"` //--
+	ScreenName     string  `json:"screen_name,omitempty"`
+	MovieName      string  `json:"movie_name,omitempty"`
+	UpTimeFormat   string  `json:"up_time_format,omitempty"` //给前端看的
+	DownTimeFormat string  `json:"down_time_format,omitempty"`
+	IsTimeOut      bool    `json:"is_time_out,omitempty"`
 }
 
 // MovieAndScreen 当前存在的电影和影厅

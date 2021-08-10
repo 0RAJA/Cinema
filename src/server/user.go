@@ -72,7 +72,7 @@ func CheckMessage(message *model.Message) bool {
 	if err != nil || checkMessage == nil {
 		return false
 	}
-	//err = dao.DeleteMessage(message.Email)
+	err = dao.DeleteMessage(message.Email)
 	if err != nil {
 		return false
 	}
@@ -131,4 +131,20 @@ func EmailOK(email string) bool {
 		return true
 	}
 	return false
+}
+
+func UpdateUser(user *model.User) error {
+	return dao.UpdateUser(user)
+}
+
+func GetUserByID(userID int) (*model.User, error) {
+	return dao.GetUserByID(userID)
+}
+
+func UpdateImg(user *model.User) error {
+	return dao.UpdateImg(user)
+}
+
+func UpdateEmail(user *model.User) error {
+	return dao.UpdateEmail(user)
 }

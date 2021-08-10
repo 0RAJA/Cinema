@@ -17,7 +17,7 @@ func TestAddBox(t *testing.T) {
 func TestUpdateBox(t *testing.T) {
 	err := UpdateBox(&model.Box{
 		MovieID:     2,
-		TotalAmount: 100,
+		TotalAmount: 444,
 		MovieName:   "",
 		ImgPath:     "",
 	})

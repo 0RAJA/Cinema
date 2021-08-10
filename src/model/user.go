@@ -8,10 +8,10 @@ const (
 
 // User 用户信息
 type User struct {
-	ID       int
-	Name     string
-	Password string
-	Email    string
-	Root     int
-	ImgPath  string
+	ID       int    `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Password string `json:"password,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Root     int    `json:"root,omitempty"`
+	ImgPath  string `json:"imgPath,omitempty"`
 }

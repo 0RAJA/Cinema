@@ -51,8 +51,8 @@ func InsertUser(user *model.User) error {
 // UpdateUser 更新用户信息
 func UpdateUser(user *model.User) error {
 	newPassword := utils.Md5Str(md5.Sum([]byte(user.Password)))
-	sql := "update users set name = ?,password = ?,root = ?,img_path = ?,email = ? where id = ?"
-	_, err := utils.DB.Exec(sql, user.Name, newPassword, user.Root, user.ImgPath, user.Email, user.ID)
+	sql := "update users set name = ?,password = ? where id = ?"
+	_, err := utils.DB.Exec(sql, user.Name, newPassword, user.ID)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func UpdateUser(user *model.User) error {
 // GetUserByID 通过userID获取user信息
 func GetUserByID(userID int) (*model.User, error) {
 	user := model.User{}
-	sql := "select * from users where id = ?;"
+	sql := "select id, name, password, root, img_path, email from users where id = ?;"
 	err := utils.DB.QueryRow(sql, userID).Scan(&user.ID, &user.Name, &user.Password, &user.Root, &user.ImgPath, &user.Email)
 	if err != nil {
 		return nil, err
@@ -79,4 +79,22 @@ func GetUserByEmail(email string) (*model.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func UpdateImg(user *model.User) error {
+	sql := "update users set img_path = ? where id = ?"
+	_, err := utils.DB.Exec(sql, user.ImgPath, user.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateEmail(user *model.User) error {
+	sql := "update users set email = ? where id = ?"
+	_, err := utils.DB.Exec(sql, user.Email, user.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

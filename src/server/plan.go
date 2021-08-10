@@ -108,3 +108,28 @@ func CheckPlanTime(message *model.PlanTimeMessage) (*model.ReplyTimeMessage, err
 	reply.IsOK = true
 	return &reply, nil
 }
+
+// GetPlansByMovie 通过电影ID筛选演出计划
+func GetPlansByMovie(movieID int) ([]*model.Plan, error) {
+	return dao.GetPlansByMovie(movieID)
+}
+
+//GetPlansByMovieAndTime 通过电影ID以及时间筛选演出计划
+func GetPlansByMovieAndTime(movieID int, startDate, endDate time.Time) ([]*model.Plan, error) {
+	plans, err := dao.GetPlansByMovie(movieID)
+	if err != nil {
+		return nil, err
+	}
+	ret := make([]*model.Plan, 0, len(plans))
+	for i := 0; i < len(plans); i++ {
+		uTime, _ := time.Parse(model.PlanTimeFormat, plans[i].UpTime)
+		dTime, _ := time.Parse(model.PlanTimeFormat, plans[i].DownTime)
+		if startDate.Before(uTime) && endDate.After(dTime) {
+			if uTime.Before(time.Now()) { //判断过期
+				plans[i].IsTimeOut = true
+			}
+			ret = append(ret, plans[i])
+		}
+	}
+	return ret, nil
+}

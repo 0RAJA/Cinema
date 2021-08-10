@@ -1,6 +1,6 @@
 package model
 
-const MovieTimeFormat = "2006-1-2"
+const MovieTimeFormat = "2006-01-02"
 
 // Movie 电影信息
 type Movie struct {
