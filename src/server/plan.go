@@ -91,10 +91,17 @@ func CheckPlanTime(message *model.PlanTimeMessage) (*model.ReplyTimeMessage, err
 		log.Println(err)
 		return &model.ReplyTimeMessage{}, nil
 	}
+
 	endTime := startTime.Add(time.Duration(movie.Length) * time.Minute)
 	reply := model.ReplyTimeMessage{
 		DownTimeFormat: endTime.Format(model.PlanTimeFormatOK),
 		IsOK:           false,
+	}
+	startDate, _ := time.Parse(model.MovieTimeFormat, movie.UpDate)
+	//判断上映时间和计划开始时间
+	if startDate.After(startTime) {
+		reply.IsOK = false
+		return &reply, nil
 	}
 	for i := 0; i < len(plans); i++ {
 		sTime, _ := time.Parse(model.PlanTimeFormat, plans[i].UpTime)

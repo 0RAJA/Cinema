@@ -7,6 +7,8 @@ import (
 
 // AddComment 新增评论
 func AddComment(comment *model.Comment) error {
+	defer rwMutexComment.Unlock()
+	rwMutexComment.Lock()
 	sql := "insert into comment (text, user_id, movie_id, cnt, time) values (?,?,?,?,?);"
 	_, err := utils.DB.Exec(sql, comment.Text, comment.UserID, comment.MovieID, comment.Cnt, comment.Time)
 	if err != nil {
@@ -17,6 +19,8 @@ func AddComment(comment *model.Comment) error {
 
 // DeleteCommitByID 删除评论
 func DeleteCommitByID(commentID int) error {
+	defer rwMutexComment.Unlock()
+	rwMutexComment.Lock()
 	sql := "delete from comment where id = ?;"
 	_, err := utils.DB.Exec(sql, commentID)
 	if err != nil {
@@ -27,6 +31,8 @@ func DeleteCommitByID(commentID int) error {
 
 // GetCommentByID 获取指定评论
 func GetCommentByID(commentID int) (*model.Comment, error) {
+	defer rwMutexComment.RUnlock()
+	rwMutexComment.RLock()
 	sql := "select comment.id, text, user_id, movie_id, cnt, time,u.name,u.img_path from comment join users u on comment.user_id = u.id where comment.id = ?;"
 	var comment model.Comment
 	err := utils.DB.QueryRow(sql, commentID).Scan(&comment.ID, &comment.Text, &comment.UserID, &comment.MovieID, &comment.Cnt, &comment.Time, &comment.UserName, &comment.ImgPath)
@@ -38,6 +44,8 @@ func GetCommentByID(commentID int) (*model.Comment, error) {
 
 // GetAllComments 获取全部评论
 func GetAllComments() ([]*model.Comment, error) {
+	defer rwMutexComment.RUnlock()
+	rwMutexComment.RLock()
 	sql := "select comment.id, text, user_id, movie_id, cnt, time,u.name,u.img_path from comment join users u on comment.user_id = u.id order by cnt desc ;"
 	var comments []*model.Comment
 	rows, err := utils.DB.Query(sql)
@@ -56,6 +64,8 @@ func GetAllComments() ([]*model.Comment, error) {
 }
 
 func UpdateComment(comment *model.Comment) error {
+	defer rwMutexComment.RUnlock()
+	rwMutexComment.RLock()
 	sql := "update comment set text = ?,cnt = ? where id = ?"
 	_, err := utils.DB.Exec(sql, comment.Text, comment.Cnt, comment.ID)
 	if err != nil {

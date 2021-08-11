@@ -10,6 +10,8 @@ const PAGESIZE = 8
 
 // AddMovie 新增电影信息
 func AddMovie(movie *model.Movie) error {
+	defer rwmutexMovie.Unlock()
+	rwmutexMovie.Lock()
 	sql := "insert into movie (name, up_date, type, area, director,star, length, intro, img_path) values (?,?,?,?,?,?,?,?,?);"
 	_, err := utils.DB.Exec(sql, movie.Name, movie.UpDate, movie.Type, movie.Area, movie.Director, movie.Star, movie.Length, movie.Intro, movie.ImgPath)
 	if err != nil {
@@ -31,6 +33,8 @@ func AddMovie(movie *model.Movie) error {
 
 // UpdateMovie 更新电影信息
 func UpdateMovie(movie *model.Movie) error {
+	defer rwmutexMovie.Unlock()
+	rwmutexMovie.Lock()
 	sql := "update movie set name = ?,up_date = ?,type = ?,area = ?,director = ?,star = ?,length = ?,intro = ?,img_path = ? where id = ?"
 	_, err := utils.DB.Exec(sql, movie.Name, movie.UpDate, movie.Type, movie.Area, movie.Director, movie.Star, movie.Length, movie.Intro, movie.ImgPath, movie.ID)
 	if err != nil {
@@ -41,6 +45,8 @@ func UpdateMovie(movie *model.Movie) error {
 
 // GetAllMovies 获取所有电影信息
 func GetAllMovies() ([]*model.Movie, error) {
+	defer rwmutexMovie.RUnlock()
+	rwmutexMovie.RLock()
 	sql := "select id, name, up_date, type, area, director,star, length, intro, img_path  from movie order by score desc;"
 	rows, err := utils.DB.Query(sql)
 	if err != nil {
@@ -60,6 +66,8 @@ func GetAllMovies() ([]*model.Movie, error) {
 
 // GetMovieByID 通过电影ID查询电影信息
 func GetMovieByID(movieID int) (*model.Movie, error) {
+	defer rwmutexMovie.RUnlock()
+	rwmutexMovie.RLock()
 	sql := "select id, name, up_date, type, area, director,star, length, intro, img_path,score  from movie where id = ?;"
 	var movie model.Movie
 	err := utils.DB.QueryRow(sql, movieID).Scan(&movie.ID, &movie.Name, &movie.UpDate, &movie.Type, &movie.Area, &movie.Director, &movie.Star, &movie.Length, &movie.Intro, &movie.ImgPath, &movie.Score)
@@ -71,6 +79,8 @@ func GetMovieByID(movieID int) (*model.Movie, error) {
 
 // GetPageMovies 通过pageNo获取当前页数电影信息
 func GetPageMovies(pageNo int) (*model.Page, error) {
+	defer rwmutexMovie.RUnlock()
+	rwmutexMovie.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
 	//获取总记录数和总页数
 	sql := "select count(*) from movie;"
@@ -103,6 +113,8 @@ func GetPageMovies(pageNo int) (*model.Page, error) {
 
 // GetPageMoviesByName 通过pageNo获取当前页数电影信息
 func GetPageMoviesByName(pageNo int, movieName string) (*model.Page, error) {
+	defer rwmutexMovie.RUnlock()
+	rwmutexMovie.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
 	limit := "%" + movieName + "%"
 	//获取总记录数和总页数
@@ -136,6 +148,8 @@ func GetPageMoviesByName(pageNo int, movieName string) (*model.Page, error) {
 
 // DeleteMovieByID 删除电影信息
 func DeleteMovieByID(movieID int) error {
+	defer rwmutexMovie.Unlock()
+	rwmutexMovie.Lock()
 	sql := "delete from movie where id = ?;"
 	_, err := utils.DB.Exec(sql, movieID)
 	if err != nil {
@@ -146,6 +160,8 @@ func DeleteMovieByID(movieID int) error {
 
 // GetScoreByID 获取分数
 func GetScoreByID(movieID int) (int, error) {
+	defer rwmutexMovie.RUnlock()
+	rwmutexMovie.RLock()
 	sql := "select score from movie where id = ?;"
 	var score int
 	err := utils.DB.QueryRow(sql, movieID).Scan(&score)
@@ -157,6 +173,8 @@ func GetScoreByID(movieID int) (int, error) {
 
 // UpdateScore 更新分数
 func UpdateScore(movieID, score int) error {
+	defer rwmutexMovie.Unlock()
+	rwmutexMovie.Lock()
 	sql := "update movie set score = ? where id = ?"
 	_, err := utils.DB.Exec(sql, score, movieID)
 	if err != nil {

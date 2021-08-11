@@ -8,6 +8,8 @@ import (
 
 // AddPlan 增加演出计划
 func AddPlan(plan *model.Plan) error {
+	defer rwmutexPlan.Unlock()
+	rwmutexPlan.Lock()
 	sql := "insert into plan (screen_id, movie_id, up_time, down_time, price) values (?,?,?,?,?);"
 	_, err := utils.DB.Exec(sql, plan.ScreenID, plan.MovieID, plan.UpTime, plan.DownTime, plan.Price)
 	if err != nil {
@@ -66,6 +68,8 @@ func AddPlan(plan *model.Plan) error {
 
 // DeletePlanByID 删除计划
 func DeletePlanByID(planID int) error {
+	defer rwmutexPlan.Unlock()
+	rwmutexPlan.Lock()
 	//先删除票
 	err := DeleteTicketsByPlanID(planID)
 	if err != nil {
@@ -81,6 +85,8 @@ func DeletePlanByID(planID int) error {
 
 // DeletePlansByScreenID 根据screenID删除所有plans
 func DeletePlansByScreenID(screenID int) error {
+	defer rwmutexPlan.Unlock()
+	rwmutexPlan.Lock()
 	//先删除票
 	err := DeleteTicketsByScreenID(screenID)
 	if err != nil {
@@ -96,6 +102,8 @@ func DeletePlansByScreenID(screenID int) error {
 
 // GetPagePlans 获取分页计划
 func GetPagePlans(pageNo int) (*model.Page, error) {
+	defer rwmutexPlan.RUnlock()
+	rwmutexPlan.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
 	//获取总记录数和总页数
 	sql := "select count(*) from plan;"
@@ -140,6 +148,8 @@ func GetPagePlans(pageNo int) (*model.Page, error) {
 
 // GetPlanByID 通过计划ID获取计划
 func GetPlanByID(planID int) (*model.Plan, error) {
+	defer rwmutexPlan.RUnlock()
+	rwmutexPlan.RLock()
 	sql := "select id, screen_id, movie_id, up_time, down_time, price from plan where id = ?;"
 	var plan model.Plan
 	err := utils.DB.QueryRow(sql, planID).Scan(&plan.ID, &plan.ScreenID, &plan.MovieID, &plan.UpTime, &plan.DownTime, &plan.Price)
@@ -162,6 +172,8 @@ func GetPlanByID(planID int) (*model.Plan, error) {
 
 // UpdatePlan 更新时间还有价格
 func UpdatePlan(plan *model.Plan) error {
+	defer rwmutexPlan.Unlock()
+	rwmutexPlan.Lock()
 	sql := "update plan set up_time = ?,down_time = ?,price = ? where id = ?"
 	_, err := utils.DB.Exec(sql, plan.UpTime, plan.DownTime, plan.Price, plan.ID)
 	if err != nil {
@@ -172,6 +184,8 @@ func UpdatePlan(plan *model.Plan) error {
 
 // GetAllPlans 获取所有plans
 func GetAllPlans() ([]*model.Plan, error) {
+	defer rwmutexPlan.RUnlock()
+	rwmutexPlan.RLock()
 	sql := "select id, screen_id, movie_id, up_time, down_time, price from plan"
 	rows, err := utils.DB.Query(sql)
 	if err != nil {
@@ -200,6 +214,8 @@ func formatTime(plan *model.Plan) {
 
 // GetPlansByScreenAndMovie 通过影厅和电影筛选计划
 func GetPlansByScreenAndMovie(screenID, movieID int) ([]*model.Plan, error) {
+	defer rwmutexPlan.RUnlock()
+	rwmutexPlan.RLock()
 	sql := "select id, screen_id, movie_id, up_time, down_time, price from plan where screen_id = ? and movie_id = ?"
 	rows, err := utils.DB.Query(sql, screenID, movieID)
 	if err != nil {
@@ -220,6 +236,8 @@ func GetPlansByScreenAndMovie(screenID, movieID int) ([]*model.Plan, error) {
 
 // GetPlansByMovie 通过电影名筛选演出计划
 func GetPlansByMovie(movieID int) ([]*model.Plan, error) {
+	defer rwmutexPlan.RUnlock()
+	rwmutexPlan.RLock()
 	sql := "select p.id, p.screen_id, p.movie_id, p.up_time, p.down_time, p.price,m.name,s.name from plan p join movie m on p.movie_id = m.id join screen s on s.id = p.screen_id where movie_id = ?"
 	rows, err := utils.DB.Query(sql, movieID)
 	if err != nil {
