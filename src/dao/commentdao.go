@@ -43,12 +43,12 @@ func GetCommentByID(commentID int) (*model.Comment, error) {
 }
 
 // GetAllComments 获取全部评论
-func GetAllComments() ([]*model.Comment, error) {
+func GetAllComments(movieID int) ([]*model.Comment, error) {
 	defer rwMutexComment.RUnlock()
 	rwMutexComment.RLock()
-	sql := "select comment.id, text, user_id, movie_id, cnt, time,u.name,u.img_path from comment join users u on comment.user_id = u.id order by cnt desc ;"
+	sql := "select comment.id, text, user_id, movie_id, cnt, time,u.name,u.img_path  from comment  join users u  on comment.user_id = u.id where movie_id = ? order by cnt desc ;"
 	var comments []*model.Comment
-	rows, err := utils.DB.Query(sql)
+	rows, err := utils.DB.Query(sql, movieID)
 	if err != nil {
 		return nil, err
 	}

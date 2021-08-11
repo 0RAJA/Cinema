@@ -16,7 +16,12 @@ func GetAllComments(w http.ResponseWriter, r *http.Request) {
 		Main(w, r)
 		return
 	}
-	sessions, err := server.GetAllComments()
+	movieID, err := strconv.Atoi(r.FormValue("movieID"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	sessions, err := server.GetAllComments(movieID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

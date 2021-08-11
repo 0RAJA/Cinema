@@ -118,7 +118,17 @@ func CheckPlanTime(message *model.PlanTimeMessage) (*model.ReplyTimeMessage, err
 
 // GetPlansByMovie 通过电影ID筛选演出计划
 func GetPlansByMovie(movieID int) ([]*model.Plan, error) {
-	return dao.GetPlansByMovie(movieID)
+	plans, err := dao.GetPlansByMovie(movieID)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(plans); i++ {
+		uTime, _ := time.Parse(model.PlanTimeFormat, plans[i].UpTime)
+		if uTime.Before(time.Now()) { //判断过期
+			plans[i].IsTimeOut = true
+		}
+	}
+	return plans, nil
 }
 
 //GetPlansByMovieAndTime 通过电影ID以及时间筛选演出计划

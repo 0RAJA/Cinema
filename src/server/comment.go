@@ -17,8 +17,8 @@ func GetCommentByID(commentID int) (*model.Comment, error) {
 	return dao.GetCommentByID(commentID)
 }
 
-func GetAllComments() ([]*model.Comment, error) {
-	return dao.GetAllComments()
+func GetAllComments(movieID int) ([]*model.Comment, error) {
+	return dao.GetAllComments(movieID)
 }
 
 func IsSelfComment(commentID, userID int) (bool, error) {
