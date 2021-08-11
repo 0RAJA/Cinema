@@ -28,8 +28,8 @@ var emailMessage *gomail.Message
 const (
 	ServerHost = "smtp.qq.com"
 	ServerPort = 465
-	FromEmail  = "1647193241@qq.com" //发件人邮箱地址
-	FromPasswd = "twqunycchmxecijg"
+	FromEmail  = ""                 //发件人邮箱地址 TODO:填邮箱
+	FromPasswd = "twqunycchmxecijg" //TODO:填密码
 )
 
 // SendEmail 发送验证码并返回验证码
