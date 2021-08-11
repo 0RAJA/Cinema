@@ -69,7 +69,7 @@ func selectPort(w http.ResponseWriter, root int) {
 		t = template.Must(template.ParseFiles("src/views/pages/manager/manager.html"))
 	case model.RootAdmin:
 		//TODO 管理员界面
-		t = template.Must(template.ParseFiles("src/views/pages/admin/admin.html"))
+		t = template.Must(template.ParseFiles("src/views/pages/admin/account.html"))
 	}
 	_ = t.Execute(w, "")
 }

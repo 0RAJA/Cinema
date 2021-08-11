@@ -26,15 +26,15 @@ func CheckCode(codeStr string) (*model.Code, error) {
 	return &code, nil
 }
 
-// DeleteAllCodes 删除邀请码
-func DeleteAllCodes() error {
-	sql := "delete from code;"
-	_, err := utils.DB.Exec(sql)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// DeleteAllCodes 删除所有邀请码
+//func DeleteAllCodes() error {
+//	sql := "delete from code;"
+//	_, err := utils.DB.Exec(sql)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
 // DeleteCode 删除单个邀请码
 func DeleteCode(codeStr string) error {
@@ -44,4 +44,23 @@ func DeleteCode(codeStr string) error {
 		return err
 	}
 	return nil
+}
+
+// GetAllCodes 获取所有codes
+func GetAllCodes() ([]*model.Code, error) {
+	sql := "select code, root from code;"
+	rows, err := utils.DB.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	var codes []*model.Code
+	for rows.Next() {
+		var code model.Code
+		err := rows.Scan(&code.Code, &code.Root)
+		if err != nil {
+			return nil, err
+		}
+		codes = append(codes, &code)
+	}
+	return codes, err
 }

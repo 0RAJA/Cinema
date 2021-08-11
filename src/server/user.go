@@ -85,6 +85,11 @@ func CheckCode(codeStr string) (*model.Code, bool) {
 	if err != nil || code == nil {
 		return nil, false
 	}
+	//一次性邀请码
+	err = dao.DeleteCode(codeStr)
+	if err != nil {
+		log.Println(err)
+	}
 	return code, true
 }
 

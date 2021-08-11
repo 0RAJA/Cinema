@@ -100,6 +100,20 @@ func main() {
 	http.HandleFunc("/user/updateEmail", controller.UpdateEmail)
 	//获取用户信息
 	http.HandleFunc("/user/getUserMessage", controller.GetUserMessage)
+	//获取所有邀请码
+	http.HandleFunc("/admin/getAllCodes", controller.GetAllCodes)
+	//删除邀请码
+	http.HandleFunc("/admin/deleteCode", controller.DeleteCode)
+	//增加邀请码
+	http.HandleFunc("/admin/addCode", controller.AddCode)
+	//获取所有评论
+	http.HandleFunc("/client/getAllComments", controller.GetAllComments)
+	//增加评论
+	http.HandleFunc("/client/addComment", controller.AddComment)
+	//删除评论
+	http.HandleFunc("/client/deleteComment", controller.DeleteComment)
+	//评分评论
+	http.HandleFunc("/client/likeComment", controller.LikeComment)
 	//监听
 	_ = http.ListenAndServe(":8080", nil)
 }
