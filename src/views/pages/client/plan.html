@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+          rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script crossorigin="anonymous"
+            integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+            src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script crossorigin="anonymous"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js">
+    </script>
+    <style>
+        * {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="row col-md-12" style="margin-left: auto">
+    <span><a href="/client/main">主页</a></span>
+    <span><a href="#" onclick="window.history.back()">返回</a></span>
+    <span><a href="/client/order">我的订单</a></span>
+    <span><a href="/logout">注销</a></span>
+</div>
+<div class="row col-md-12"><br></div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <tr>
+                <td style="text-align: center;width: 100%;">
+                    <img alt="电影" id="imgPath" src="" width="200px">
+                </td>
+            </tr>
+            <tr>
+                <td id="movieName" style="text-align: center;width: 100%;"></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-md-5" style="margin-left: 30px"><label for="sTime">开始日期</label><input
+                                class="form-control"
+                                id="sTime"
+                                type="date"></div>
+                        <div class="col-md-5"><label for="eTime">结束日期</label><input class="form-control"
+                                                                                    id="eTime"
+                                                                                    type="date"></div>
+                        <div class="col-md-1">
+                            <button class="btn btn-primary" onclick="SearchTime()" style="margin-top: 30px"
+                                    type="button">
+                                查询
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-bordered">
+            <tr>
+                <th>电影名</th>
+                <th>影厅名</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>价格(元)</th>
+                <th>操作</th>
+            </tr>
+            {{range .Plans}}
+            <tr>
+                <td>{{.MovieName}}</td>
+                <td>{{.ScreenName}}</td>
+                <td>{{.UpTime}}</td>
+                <td>{{.DownTime}}</td>
+                <td>{{.Price}}</td>
+                {{if .IsTimeOut}}
+                <td>已过期</td>
+                {{else}}
+                <td><a href="/client/toTakeTickets?planID={{.ID}}">选座</a></td>
+                {{end}}
+            </tr>
+            {{end}}
+        </table>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<script>
+
+    // 获取电影信息
+    window.onload = function GetMovieByID() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                document.getElementById("imgPath").src = data.imgPath;
+                document.getElementById("movieName").innerHTML = data.name;
+            }
+        }
+        xmlHttp.open("POST", "/client/getMovieByID?movieID={{.MovieID}}", true);
+        xmlHttp.send();
+    }
+
+    //查询时间
+    function SearchTime() {
+        const sTime = document.getElementById("sTime").value;
+        const eTime = document.getElementById("eTime").value;
+        location.href = "/client/getPlansByMovieIDAndTime?movieID=" + "{{.MovieID}}" + "&sTime=" + sTime + "&eTime=" + eTime;
+    }
+</script>
+</body>
+</html>

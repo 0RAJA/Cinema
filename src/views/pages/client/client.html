@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script crossorigin="anonymous"
+            integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+            src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script crossorigin="anonymous"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js">
+    </script>
+    <style>
+        * {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="row col-md-12">
+        <div class="row col-md-3" style="margin-left:600px;margin-right: 5px;margin-top: 20px">
+            <label for="searchMovieName">电影名:</label><input class="form-control" id="searchMovieName" type="text">
+        </div>
+        <div class="row col-md-2">
+            <button class="btn btn-primary" onclick="Search()" style="margin-top: 50px" type="button">查询</button>
+        </div>
+        <div class="col-md-2 text-right">
+            <img alt="" height="50px"
+                 id="head" src="" width="50px">
+            <span>欢迎<span id="myName"></span>到来</span>
+            <dl>
+                <dt class="text"><a href="/client/order">我的订单</a></dt>
+                <dt class="text login-name"><a href="/profile">基本信息</a></dt>
+                <dt class="text"><a href="/logout">退出登录</a></dt>
+            </dl>
+        </div>
+    </div>
+    <div class="row col-md-12"><br></div>
+    <div class="col-md-3">
+        <ul class="list-group box">
+            <li class="list-group-item"><span>排行榜</span></li>
+        </ul>
+    </div>
+    <div class="row col-md-9">
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <br>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <div class="row col-md-3 movie" style="height: 400px"></div>
+        <br>
+    </div>
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container" style="width: 1280px">
+            <button onclick="ToTop()">首页</button>
+            <button id="prev" onclick="ToPrev()">上一页</button>
+            <span id="Insert"></span>>
+            <button id="next" onclick="ToNext()">下一页</button>
+            <button onclick="ToEnd()">末页</button>
+            到第<input id="pn_input" name="pn" value=""/>页
+            <input id="bt_input" onclick="ToAny(parseInt(this.previousElementSibling.value,10))" type="button"
+                   value="确定">
+        </div>
+    </nav>
+</div>
+<script>
+    pageNo = 1
+    //获取票房
+    window.onload = function () {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                let boxNode = document.getElementsByClassName("box")[0];
+                for (let i = 1; i <= data.length && i <= 10; i++) {
+                    let li = document.createElement("li");
+                    li.setAttribute("class", "list-group-item")
+                    let total_amount = data[i - 1].total_amount;
+                    if (total_amount === undefined) {
+                        total_amount = 0;
+                    }
+                    li.innerHTML = `第<span>` + i + `</span>名&nbsp;<a href=/client/getMovieMessage?movieID=` + data[i - 1].movie_id + `>` + data[i - 1].movie_name + `</a>&nbsp;<span>` + total_amount + `</span>元`;
+                    boxNode.appendChild(li);
+                }
+            }
+        }
+        xmlHttp.open("POST", "/client/getAllBoxes", true);
+        xmlHttp.send();
+    }
+
+    //获取电影信息
+    function GetPageMovies() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                data = JSON.parse(text);
+                let movies = document.getElementsByClassName("movie");
+                for (let i = 0; i < movies.length; i++) {
+                    movies[i].innerHTML = "";
+                }
+                for (let i = 0; i < data.movies.length; i++) {
+                    let score = data.movies[i].score;
+                    if (score === undefined) {
+                        score = 0;
+                    }
+                    movies[i].innerHTML = `<a href="/client/getMovieMessage?movieID=` + data.movies[i].movieID + `"><img src="` + data.movies[i].imgPath + `" height="250px" width="250px" style="margin-right: 100px" alt=""></a><br><span>电影名:` + data.movies[i].name + `&nbsp;评分:` + score + `</span>`
+                }
+                document.getElementById("Insert").innerHTML = `当前是第` + data.page_no + `页 共` + data.total_page_no + `页,共` + data.total_record + `条记录`
+            }
+        }
+        xmlHttp.open("get", "/client/getPageMovies?pageNo=" + pageNo, true);
+        xmlHttp.send();
+    }
+
+    //通过电影名获取分页信息
+    function GetPageMoviesByName() {
+        let xmlHttp;
+        const movieName = document.getElementById("searchMovieName").value;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                data = JSON.parse(text);
+                let movies = document.getElementsByClassName("movie");
+                for (let i = 0; i < movies.length; i++) {
+                    movies[i].innerHTML = "";
+                }
+                for (let i = 0; i < data.movies.length; i++) {
+                    let score = data.movies[i].score;
+                    if (score === undefined) {
+                        score = 0;
+                    }
+                    movies[i].innerHTML = `<a href="/client/getMovieMessage?movieID=` + data.movies[i].movieID + `"><img src="` + data.movies[i].imgPath + `" height="250px" width="250px" style="margin-right: 100px" alt=""></a><br><span>电影名:` + data.movies[i].name + `&nbsp;评分:` + score + `</span>`
+                }
+                document.getElementById("Insert").innerHTML = `当前是第` + data.page_no + `页 共` + data.total_page_no + `页,共` + data.total_record + `条记录`
+            }
+        }
+        xmlHttp.open("get", "/client/getPageMoviesByName?pageNo=" + pageNo + "&movieName=" + movieName, true);
+        xmlHttp.send();
+    }
+
+    function Search() {
+        pageNo = 1;
+        GetPageMoviesByName();
+    }
+
+    GetPageMovies();
+
+    //去首页
+    function ToTop() {
+        pageNo = 1;
+        GetPageMoviesByName();
+    }
+
+    //去首页
+    function ToEnd() {
+        pageNo = data.total_page_no;
+        GetPageMoviesByName();
+    }
+
+    //下一页
+    function ToNext() {
+        if (pageNo + 1 <= data.total_page_no) {
+            pageNo++;
+            GetPageMoviesByName();
+        }
+    }
+
+    //上一页
+    function ToPrev() {
+        if (pageNo - 1 >= 1) {
+            pageNo--;
+            GetPageMoviesByName();
+        }
+    }
+
+    //到目标页
+    function ToAny(page) {
+        if (page !== undefined && page >= 1 && page <= data.total_page_no) {
+            pageNo = page;
+            GetPageMoviesByName();
+        }
+    }
+
+    function GetUser() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                document.getElementById("head").src = data.imgPath;
+                document.getElementById("myName").innerHTML = data.name;
+            }
+        }
+        xmlHttp.open("GET", "/user/getUserMessage", true);
+        xmlHttp.send();
+    }
+
+    GetUser();
+</script>
+</body>
+</html>

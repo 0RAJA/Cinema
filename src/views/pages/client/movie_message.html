@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <title>Bootstrap 101 Template</title>
+
+        <!-- Bootstrap -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+              integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+              rel="stylesheet">
+
+        <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+        <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+        <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+        <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+        <script crossorigin="anonymous"
+                integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+                src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+        <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+        <script crossorigin="anonymous"
+                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+                src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js">
+        </script>
+        <style>
+        </style>
+        <style>
+            * {
+                font-size: 18px;
+            }
+        </style>
+    </head>
+</head>
+<body>
+<div class="row">
+    <div class="row">
+        <div class="row col-md-2"></div>
+        <div class="row col-md-2">
+            <a href="#" onclick="window.history.back()">返回</a>
+            <a href="/client/main">首页</a>
+        </div>
+        <div class="row col-md-4"></div>
+        <div class="row col-md-4 text-right" style="margin-left: auto">
+            <img alt="" height="50px"
+                 id="head" src="" width="50px">
+            <span>欢迎<span id="myName"></span>到来</span>
+            <dl>
+                <dt class="text"><a href="/client/order">我的订单</a></dt>
+                <dt class="text login-name"><a href="/profile">基本信息</a></dt>
+                <dt class="text"><a href="/logout">退出登录</a></dt>
+            </dl>
+        </div>
+    </div>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            <img alt="电影" src="{{.ImgPath}}" width="200px">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            电影:{{.Name}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            上映时间:{{.UpDate}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            作者:{{.Director}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            类型:{{.Type}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            地区:{{.Area}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            主演:{{.Star}}
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            时长:{{.Length}}分钟
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            <div>
+                介绍:{{.Intro}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            分数:{{.Score}}分
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            <label for="score">
+                打分:
+                <select id="score">
+                    <option selected value="0">--请选择--</option>
+                    <option value="1">赞👍</option>
+                    <option value="-1">踩💩</option>
+                </select>
+            </label>
+            <button onclick="scoring()">确定</button>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 100%;">
+            <button onclick="GetPlans()">查看放映计划</button>
+        </td>
+    </tr>
+</table>
+<div class="row col-md-2"></div>
+<div class="row col-md-10">
+    <table class="table-hover" id="comment">
+        <tr>
+            <td style="width: 500px;height: 100px">头像</td>
+            <td style="width: 500px">用户名</td>
+            <td style="width: 500px">时间</td>
+            <td style="width: 1000px">评论</td>
+            <td style="width: 500px">评价</td>
+            <td style="width: 500px">操作</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="4">
+                <label>评论:
+                    <input id="text" style="width: 500px" type="text">
+                </label>
+            </td>
+            <td>
+                <button onclick="addComment()">评论</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    movieID = parseInt("{{.ID}}", 10)
+
+    //评分
+    function scoring() {
+        let xmlHttp;
+        score = parseInt(document.getElementById("score").value, 10)
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "true") {
+                    alert("评分成功");
+                } else {
+                    alert("评分失败");
+                }
+                location.reload();
+            }
+        }
+        xmlHttp.open("get", "/client/scoring?" + "movieID=" + movieID + "&score=" + score, true);
+        xmlHttp.send();
+    }
+
+    //获取演出计划
+    function GetPlans() {
+        location.href = "/client/getPlansByMovieIDAndTime?movieID=" + movieID;
+    }
+
+    function GetUser() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                document.getElementById("head").src = data.imgPath;
+                document.getElementById("myName").innerHTML = data.name;
+            }
+        }
+        xmlHttp.open("GET", "/user/getUserMessage", true);
+        xmlHttp.send();
+    }
+
+    GetUser();
+
+    function likeComment(commentID, add) {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (add === "0") {
+            return
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "false") {
+                    alert("点赞失败");
+                }
+            }
+        }
+        xmlHttp.open("GET", "/client/likeComment?add=" + add + "&commentID=" + commentID, true);
+        xmlHttp.send();
+    }
+
+    function addComment() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        let comment = document.getElementById("text").value;
+        if (comment.length < 5 || comment.length > 30) {
+            return
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "false") {
+                    alert("评论失败");
+                }
+                location.reload();
+            }
+        }
+        xmlHttp.open("GET", "/client/addComment?comment=" + comment + "&movieID=" + movieID, true);
+        xmlHttp.send();
+    }
+
+    function getComments() {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        const commentNode = document.getElementById("comment");
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let text = xmlHttp.responseText;
+                let data = JSON.parse(text);
+                for (let i = 0; i < data.length; i++) {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td><img id="CommentImg" src="` + data[i].img_path + `" alt="" width="100px" height="100px"></td>
+            <td id="CommentName">` + data[i].user_name + `</td>
+            <td id="CommentTime">` + data[i].time + `</td>
+            <td id="CommentText">` + data[i].text + `</td>
+            <td>
+                <label>
+                    <select onchange="likeComment(` + data[i].id + ',this.value' + `)">
+                        <option selected value="0">--请选择--</option>
+                        <option value="1">👍</option>
+                        <option value="-1">💩</option>
+                    </select>
+                </label>
+            </td>
+            <td><button onclick="deleteComment(` + data[i].id + `)">删除</button></td>`;
+                    commentNode.appendChild(tr);
+                }
+            }
+        }
+        xmlHttp.open("get", "/client/getAllComments?movieID=" + movieID, true);
+        xmlHttp.send();
+    }
+
+    getComments();
+
+    function deleteComment(commentID) {
+        let xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (xmlHttp.response === "false") {
+                    alert("不能删除别人的!");
+                }
+                location.reload();
+            }
+        }
+        xmlHttp.open("GET", "/client/deleteComment?commentID=" + commentID, true);
+        xmlHttp.send();
+    }
+</script>
+</body>
+</html>

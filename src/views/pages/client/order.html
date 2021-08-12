@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]>
+<html class="ie8"><![endif]-->
+<!--[if IE 9]>
+<html class="ie9"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html><!--<![endif]-->
+<head>
+    <link href="//p0.meituan.net" rel="dns-prefetch"/>
+    <link href="//p1.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms0.meituan.net" rel="dns-prefetch"/>
+    <link href="//s0.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms1.meituan.net" rel="dns-prefetch"/>
+    <link href="//analytics.meituan.com" rel="dns-prefetch"/>
+    <link href="//report.meituan.com" rel="dns-prefetch"/>
+    <link href="//frep.meituan.com" rel="dns-prefetch"/>
+
+
+    <meta charset="utf-8">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="yes" http-equiv="cleartype"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="webkit" name="renderer"/>
+
+    <meta content="true" name="HandheldFriendly"/>
+    <meta content="email=no" name="format-detection"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/common.6b1d782c.css"
+          rel="stylesheet"/>
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/profile-profile.772600de.css"
+          rel="stylesheet"/>
+    <script crossorigin="anonymous"
+            src="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/stat.88d57c80.js"></script>
+    <script>if (window.devicePixelRatio >= 2) {
+        document.write('<link rel="stylesheet" href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/image-2x.8ba7074d.css"/>')
+    }</script>
+    <style>
+        @font-face {
+            font-family: stonefont;
+            src: url('//vfile.meituan.net/colorstone/3c36b34b6c55c3988286f2b54b7a3d243424.eot');
+            src: url('//vfile.meituan.net/colorstone/3c36b34b6c55c3988286f2b54b7a3d243424.eot?#iefix') format('embedded-opentype'),
+            url('//vfile.meituan.net/colorstone/3900d473540057999384bf653499ff952296.woff') format('woff');
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="header">
+    <div class="header-inner">
+        <div class="nav">
+            <ul class="navbar">
+                <li><a href="#" onclick="window.history.back()">返回</a></li>
+                <li><a href="/client/main">首页</a></li>
+            </ul>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar has-login">
+                <img src="https://img.meituan.net/maoyanuser/6d4d0283e5b7cc67b90ede89cc09eacb12512.jpg">
+                <span class="caret"></span>
+                <ul class="user-menu yes-login-menu">
+                    <li class="text"><a href="/client/order">我的订单</a></li>
+                    <li class="text login-name" title="顺着你指的方向"><a href="/profile">基本信息</a></li>
+                    <li class="text"><a href="/logout">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="header-placeholder"></div>
+
+
+<div class="container" class="page-profile/profile" id="app">
+    <div class="content">
+        <div class="main">
+            <div class="info-content clearfix">
+                <div class="user-profile-nav">
+                    <h1>个人中心</h1>
+                    <a class="orders active" href="/client/orders">我的订单</a>
+                    <a class="profile " href="/profile">基本信息</a>
+                </div>
+
+                <div class="orders-container">
+                    <div class="profile-title">我的订单</div>
+                    <div class="orders-pager">
+                        <table style="font-size: 20px">
+                            <tr>
+                                <td>电影名</td>
+                                <td>影厅名</td>
+                                <td>行</td>
+                                <td>列</td>
+                                <td style="width: 200px">开始时间</td>
+                                <td style="width: 200px">结束时间</td>
+                                <td>价格(元)</td>
+                                <td>操作</td>
+                            </tr>
+                            {{range .}}
+                            <tr>
+                                <td style="border: 1px ridge gray;">{{.MovieName}}</td>
+                                <td style="border: 1px ridge gray;">{{.ScreenName}}</td>
+                                <td style="border: 1px ridge gray;">{{.Row}}</td>
+                                <td style="border: 1px ridge gray;">{{.Col}}</td>
+                                <td style="border: 1px ridge gray;">{{.UpTime}}</td>
+                                <td style="border: 1px ridge gray;">{{.DownTime}}</td>
+                                <td style="border: 1px ridge gray;">¥{{.Price}}</td>
+                                {{if .IsTimeOut}}
+                                <td>过期</td>
+                                {{else}}
+                                <td style="border: 1px ridge gray;"><a href="/client/returnTicket?ticketID={{.ID}}"
+                                                                       onclick="return confirm(`确定退票?`)">退票</a></td>
+                                {{end}}
+                            </tr>
+                            {{end}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

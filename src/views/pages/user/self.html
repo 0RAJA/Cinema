@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]>
+<html class="ie8"><![endif]-->
+<!--[if IE 9]>
+<html class="ie9"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html><!--<![endif]-->
+<head>
+
+    <link href="//p0.meituan.net" rel="dns-prefetch"/>
+    <link href="//p1.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms0.meituan.net" rel="dns-prefetch"/>
+    <link href="//s0.meituan.net" rel="dns-prefetch"/>
+    <link href="//ms1.meituan.net" rel="dns-prefetch"/>
+    <link href="//analytics.meituan.com" rel="dns-prefetch"/>
+    <link href="//report.meituan.com" rel="dns-prefetch"/>
+    <link href="//frep.meituan.com" rel="dns-prefetch"/>
+
+
+    <meta charset="utf-8">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta content="yes" http-equiv="cleartype"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="webkit" name="renderer"/>
+
+    <meta content="true" name="HandheldFriendly"/>
+    <meta content="email=no" name="format-detection"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/common.6b1d782c.css"
+          rel="stylesheet"/>
+    <link href="//s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:5788b470/profile-profile.772600de.css"
+          rel="stylesheet"/>
+</head>
+<body>
+
+
+<div class="header">
+    <div class="nav">
+        <ul class="navbar">
+            <li><a href="/client/main">首页</a></li>
+        </ul>
+    </div>
+
+    <div class="user-info">
+        <div class="user-avatar has-login">
+            <img src="https://img.meituan.net/maoyanuser/6d4d0283e5b7cc67b90ede89cc09eacb12512.jpg">
+            <span class="caret"></span>
+            <ul class="user-menu yes-login-menu">
+                <li class="text"><a href="/client/order">我的订单</a></li>
+                <li class="text"><a href="/logout">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+</div>
+<div class="header-placeholder"></div>
+
+
+<div class="container" class="page-profile/profile" id="app">
+    <div class="content">
+        <div class="main">
+            <div class="info-content clearfix">
+                <div class="user-profile-nav">
+                    <h1>个人中心</h1>
+                    <a class="orders " href="/client/order">我的订单</a>
+                    <a class="profile active" href="/profile">基本信息</a>
+                </div>
+
+                <div class="profile-container">
+                    <div class="profile-title">
+                        基本信息
+                    </div>
+                    <div class="avatar-container">
+                        <form action="/user/updateImg" enctype="multipart/form-data" id="imgSub" method="POST">
+                            <img alt="预览" id="imgPath" src="{{.ImgPath}}" style="width: 200px;height:200px;">
+                            <div class="J-upload-avatar-w upload-avatar-image">
+                                <input id="img" name="imgPath" type="file">
+                            </div>
+                            <div class="tips">支持JPG,JPEG,PNG格式,且文件需小于1M</div>
+                            <button id="submit" type="submit">更新头像</button>
+                        </form>
+                    </div>
+                    <form class="userexinfo-form" id="J-userexinfo-form">
+                        <div class="userexinfo-form-section" style="font-size: 18px">
+                            <div>
+                                <label for="userName">昵称: </label><input class="ui-checkbox" id="userName"
+                                                                         name="userName"
+                                                                         placeholder="2-15个字，支持中英文、数字"
+                                                                         style="width: 248px;font-size: 18px"
+                                                                         type="text"
+                                                                         value="{{.Name}}">
+                            </div>
+                            <div>
+                                <label for="password">密码: </label><input class="ui-checkbox" id="password"
+                                                                         name="password"
+                                                                         placeholder="2-15个字，支持中英文、数字"
+                                                                         style="width: 256px"
+                                                                         type="password">
+                            </div>
+                            <div class="userexinfo-bottom-section clearfix">
+                                <input class="form-save-btn" onclick="Save1()" type="button" value="保存">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="userexinfo-form-section" style="font-size: 18px;width: 800px">
+
+                            <div style="width: 500px">
+                                <label>邮&nbsp;箱:&nbsp;&nbsp;
+                                    <input id="email" name="email"
+                                           style="width: 256px" type="email">
+                                    <button onclick="SendMessage()" style="width: 120px">发送验证码</button>
+                                </label>
+                            </div>
+                            <div style="width: 500px">
+                                <label>验证码:
+                                    <input id="str" name="str" style="width: 248px" type="text">
+                                </label>
+                            </div>
+                            <div class="userexinfo-bottom-section clearfix">
+                                <input class="form-save-btn" id="emailSub" onclick="SaveEmail()" type="submit"
+                                       value="更新邮箱">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //更新图片
+    const imgNode = document.getElementById("img");
+    imgNode.onchange = function () {
+        const file = imgNode.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            document.getElementById("imgPath").src = this.result;
+        }
+    }
+
+    function Save1() {
+        let commit = {
+            name: document.getElementById("userName").value,
+            password: document.getElementById("password").value,
+        }
+        let outPut = JSON.stringify(commit);
+        let xmlHttp;
+        if (commit.name.length < 2 || commit.name.length > 15 || commit.password.length < 2 || commit.password.length > 15) {
+            return false
+        }
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                location.reload();
+            }
+        }
+        xmlHttp.open("post", "/user/updateMessage", true);
+        xmlHttp.setRequestHeader("Content-Type", "application/json")
+        xmlHttp.send(outPut);
+    }
+
+    //发送验证码
+    function SendMessage() {
+        let xmlHttp;
+        const email = document.getElementById("email").value;
+        if (email.length <= 0) {
+            alert("邮箱有误");
+            return
+        }
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                const flag = xmlHttp.response;
+                if (flag === "true") {
+                    alert("发送成功");
+                } else {
+                    alert("发送失败");
+                }
+            }
+        }
+        xmlHttp.open("GET", "/sendMessage?email=" + email, true);
+        xmlHttp.send();
+    }
+
+    function SaveEmail() {
+        let email = document.getElementById("email").value;
+        let str = document.getElementById("str").value;
+        let xmlHttp;
+        if (email.length <= 0) {
+            alert("邮箱有误");
+            return
+        }
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                const flag = xmlHttp.response;
+                if (flag === "true") {
+                    alert("修改成功");
+                } else {
+                    alert("修改失败");
+                }
+                location.reload();
+            }
+        }
+        xmlHttp.open("GET", "/user/updateEmail?email=" + email + "&str=" + str, true);
+        xmlHttp.send();
+    }
+</script>
+</body>
+</html>
