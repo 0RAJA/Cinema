@@ -2,9 +2,10 @@ package dao
 
 import (
 	"fmt"
-	"model"
 	"testing"
-	"utils"
+
+	"cinema/model"
+	"cinema/utils"
 )
 
 func TestAddCode(t *testing.T) {

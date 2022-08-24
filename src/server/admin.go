@@ -1,9 +1,9 @@
 package server
 
 import (
-	"dao"
-	"model"
-	"utils"
+	"cinema/dao"
+	"cinema/model"
+	"cinema/utils"
 )
 
 func GetAllCodes() ([]*model.Code, error) {

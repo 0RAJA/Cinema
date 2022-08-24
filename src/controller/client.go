@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"model"
 	"net/http"
-	"server"
 	"strconv"
 	"text/template"
 	"time"
+
+	"cinema/model"
+	"cinema/server"
 )
 
 // ClientMain 顾客首页

@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // AddAndUpdateMessage 增加并更新验证码

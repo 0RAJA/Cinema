@@ -1,11 +1,12 @@
 package server
 
 import (
-	"dao"
-	"github.com/gofrs/uuid"
 	"log"
-	"model"
 	"net/http"
+
+	"cinema/dao"
+	"cinema/model"
+	"github.com/gofrs/uuid"
 )
 
 const (
@@ -14,7 +15,7 @@ const (
 
 // DeleteCookie 删除cookie
 func DeleteCookie(cookieValue string) error {
-	err := dao.DeleteSession(cookieValue) //删除session
+	err := dao.DeleteSession(cookieValue) // 删除session
 	if err != nil {
 		return err
 	}
@@ -24,12 +25,12 @@ func DeleteCookie(cookieValue string) error {
 func IsLogin(r *http.Request) (*model.Session, bool) {
 	session := &model.Session{}
 	var err error
-	//判断cookie
+	// 判断cookie
 	cookie, _ := r.Cookie(dao.CookieKEY)
 	if cookie != nil {
-		//获取cookie值
+		// 获取cookie值
 		cookieValue := cookie.Value
-		//去数据库查相关session
+		// 去数据库查相关session
 		session, err = dao.GetSessionByID(cookieValue)
 		return session, err == nil
 	}
@@ -43,7 +44,7 @@ func CheckUserNamePwd(userName, password string) (*model.User, error) {
 
 // CreatSession 创建session返回cookie
 func CreatSession(user *model.User) (*http.Cookie, error) {
-	//创建session
+	// 创建session
 	sessionID, _ := uuid.NewV4()
 	session := model.Session{
 		ID:       sessionID.String(),
@@ -51,12 +52,12 @@ func CreatSession(user *model.User) (*http.Cookie, error) {
 		UserName: user.Name,
 		Root:     user.Root,
 	}
-	//添加session到服务器
+	// 添加session到服务器
 	err := dao.AddAndUpdateSession(&session)
 	if err != nil {
 		return nil, err
 	}
-	//创建cookie
+	// 创建cookie
 	cookie := http.Cookie{
 		Name:     dao.CookieKEY,
 		Value:    sessionID.String(),
@@ -85,7 +86,7 @@ func CheckCode(codeStr string) (*model.Code, bool) {
 	if err != nil || code == nil {
 		return nil, false
 	}
-	//一次性邀请码
+	// 一次性邀请码
 	err = dao.DeleteCode(codeStr)
 	if err != nil {
 		log.Println(err)
@@ -105,7 +106,7 @@ func InsertUser(user *model.User) {
 // CheckUserName 验证用户名
 func CheckUserName(userName string) bool {
 	_, err := dao.IsNameOK(userName)
-	if err != nil { //没查到说明可用
+	if err != nil { // 没查到说明可用
 		return true
 	}
 	return false

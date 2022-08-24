@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // AddScreen 增加Screen
@@ -17,7 +17,7 @@ func AddScreen(screen *model.Screen) error {
 	if err != nil {
 		return err
 	}
-	//再生成座位
+	// 再生成座位
 	err = AddSeatsByScreen(screen)
 	if err != nil {
 		return err
@@ -27,12 +27,12 @@ func AddScreen(screen *model.Screen) error {
 
 // DeleteScreenByID 删除Screen
 func DeleteScreenByID(screenID int) error {
-	//先删除计划
+	// 先删除计划
 	err := DeletePlansByScreenID(screenID)
 	if err != nil {
 		return err
 	}
-	//先删除座位
+	// 先删除座位
 	err = DeleteSeatsByScreenID(screenID)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func GetScreenByID(screenID int) (*model.Screen, error) {
 // GetPageScreens 获取分页影厅
 func GetPageScreens(pageNo int) (*model.Page, error) {
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
-	//获取总记录数和总页数
+	// 获取总记录数和总页数
 	sql := "select count(*) from screen;"
 	err := utils.DB.QueryRow(sql).Scan(&page.TotalRecord)
 	if err != nil {
@@ -69,7 +69,7 @@ func GetPageScreens(pageNo int) (*model.Page, error) {
 	if page.TotalRecord%page.PageSize != 0 {
 		page.TotalPageNo++
 	}
-	//通过limit获取影厅
+	// 通过limit获取影厅
 	sql = "select id, name, rows, cols, img_path from screen limit ?,?;"
 	rows, err := utils.DB.Query(sql, (page.PageNo-1)*page.PageSize, page.PageSize)
 	if err != nil {

@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"model"
 	"net/http"
-	"server"
 	"text/template"
-	"utils"
+
+	"cinema/model"
+	"cinema/server"
+	"cinema/utils"
 )
 
 // Profile 用户界面
@@ -83,7 +84,7 @@ func UpdateEmail(w http.ResponseWriter, r *http.Request) {
 	var message model.Message
 	message.Email = r.FormValue("email")
 	message.Str = r.FormValue("str")
-	ok = server.CheckMessage(&message) //验证验证码
+	ok = server.CheckMessage(&message) // 验证验证码
 	user, err := server.GetUserByID(session.UserID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

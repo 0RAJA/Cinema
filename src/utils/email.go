@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/go-gomail/gomail"
 	"log"
+
+	"github.com/go-gomail/gomail"
 )
 
 type EmailInfo struct {
@@ -10,10 +11,10 @@ type EmailInfo struct {
 	ServerPort int    // ServerPort 邮箱服务器端口，如腾讯企业邮箱为465
 
 	FromEmail  string // FromEmail　发件人邮箱地址
-	FromPasswd string //发件人邮箱密码（注意，这里是明文形式)
+	FromPasswd string // 发件人邮箱密码（注意，这里是明文形式)
 
-	Recipient []string //收件人邮箱地址
-	CC        []string //抄送
+	Recipient []string // 收件人邮箱地址
+	CC        []string // 抄送
 }
 
 var emailMessage *gomail.Message
@@ -28,8 +29,8 @@ var emailMessage *gomail.Message
 const (
 	ServerHost = "smtp.qq.com"
 	ServerPort = 465
-	FromEmail  = ""                 //发件人邮箱地址 TODO:填邮箱
-	FromPasswd = "twqunycchmxecijg" //TODO:填密码
+	FromEmail  = "1647193241@qq.com" // 发件人邮箱地址 TODO:填邮箱
+	FromPasswd = "***"               // TODO:填密码
 )
 
 // SendEmail 发送验证码并返回验证码
@@ -57,19 +58,19 @@ func sendEmail(subject, body string, emailInfo *EmailInfo) {
 	}
 
 	emailMessage = gomail.NewMessage()
-	//设置收件人
+	// 设置收件人
 	emailMessage.SetHeader("To", emailInfo.Recipient...)
-	//设置抄送列表
+	// 设置抄送列表
 	if len(emailInfo.CC) != 0 {
 		emailMessage.SetHeader("Cc", emailInfo.CC...)
 	}
 	// 第三个参数为发件人别名，如"dcj"，可以为空（此时则为邮箱名称）
 	emailMessage.SetAddressHeader("From", emailInfo.FromEmail, "dcj")
 
-	//主题
+	// 主题
 	emailMessage.SetHeader("Subject", subject)
 
-	//正文
+	// 正文
 	emailMessage.SetBody("text/html", body)
 
 	d := gomail.NewPlainDialer(emailInfo.ServerHost, emailInfo.ServerPort,

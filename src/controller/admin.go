@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"log"
-	"model"
 	"net/http"
-	"server"
 	"strconv"
 	"text/template"
+
+	"cinema/model"
+	"cinema/server"
 )
 
 // GetAllCodes 获取所有邀请码

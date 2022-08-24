@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // AddCode 增加邀请码
@@ -27,14 +27,14 @@ func CheckCode(codeStr string) (*model.Code, error) {
 }
 
 // DeleteAllCodes 删除所有邀请码
-//func DeleteAllCodes() error {
+// func DeleteAllCodes() error {
 //	sql := "delete from code;"
 //	_, err := utils.DB.Exec(sql)
 //	if err != nil {
 //		return err
 //	}
 //	return nil
-//}
+// }
 
 // DeleteCode 删除单个邀请码
 func DeleteCode(codeStr string) error {

@@ -1,10 +1,11 @@
 package server
 
 import (
-	"dao"
 	"fmt"
-	"model"
 	"time"
+
+	"cinema/dao"
+	"cinema/model"
 )
 
 func GetTicketsByPlanID(planID int) ([]*model.Ticket, error) {

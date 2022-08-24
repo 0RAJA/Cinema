@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // AddTickets 增加票

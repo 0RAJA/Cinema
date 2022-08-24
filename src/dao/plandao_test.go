@@ -2,9 +2,10 @@ package dao
 
 import (
 	"fmt"
-	"model"
 	"testing"
 	"time"
+
+	"cinema/model"
 )
 
 func TestAddPlan(t *testing.T) {

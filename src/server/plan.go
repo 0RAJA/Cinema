@@ -1,10 +1,11 @@
 package server
 
 import (
-	"dao"
 	"log"
-	"model"
 	"time"
+
+	"cinema/dao"
+	"cinema/model"
 )
 
 // GetPagePlans 获取分页计划信息
@@ -98,7 +99,7 @@ func CheckPlanTime(message *model.PlanTimeMessage) (*model.ReplyTimeMessage, err
 		IsOK:           false,
 	}
 	startDate, _ := time.Parse(model.MovieTimeFormat, movie.UpDate)
-	//判断上映时间和计划开始时间
+	// 判断上映时间和计划开始时间
 	if startDate.After(startTime) {
 		reply.IsOK = false
 		return &reply, nil
@@ -124,14 +125,14 @@ func GetPlansByMovie(movieID int) ([]*model.Plan, error) {
 	}
 	for i := 0; i < len(plans); i++ {
 		uTime, _ := time.Parse(model.PlanTimeFormat, plans[i].UpTime)
-		if uTime.Before(time.Now()) { //判断过期
+		if uTime.Before(time.Now()) { // 判断过期
 			plans[i].IsTimeOut = true
 		}
 	}
 	return plans, nil
 }
 
-//GetPlansByMovieAndTime 通过电影ID以及时间筛选演出计划
+// GetPlansByMovieAndTime 通过电影ID以及时间筛选演出计划
 func GetPlansByMovieAndTime(movieID int, startDate, endDate time.Time) ([]*model.Plan, error) {
 	plans, err := dao.GetPlansByMovie(movieID)
 	if err != nil {
@@ -142,7 +143,7 @@ func GetPlansByMovieAndTime(movieID int, startDate, endDate time.Time) ([]*model
 		uTime, _ := time.Parse(model.PlanTimeFormat, plans[i].UpTime)
 		dTime, _ := time.Parse(model.PlanTimeFormat, plans[i].DownTime)
 		if startDate.Before(uTime) && endDate.After(dTime) {
-			if uTime.Before(time.Now()) { //判断过期
+			if uTime.Before(time.Now()) { // 判断过期
 				plans[i].IsTimeOut = true
 			}
 			ret = append(ret, plans[i])

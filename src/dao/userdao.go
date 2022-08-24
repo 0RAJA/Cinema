@@ -1,16 +1,15 @@
 package dao
 
 import (
-	"crypto/md5"
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // CheckUserNamePwd 检查用户名和密码
 func CheckUserNamePwd(name, password string) (*model.User, error) {
 	defer rwmutexUser.RUnlock()
 	rwmutexUser.RLock()
-	newPassword := utils.Md5Str(md5.Sum([]byte(password)))
+	newPassword := password
 	user := model.User{}
 	sql := "select * from users where binary name = ? and password = ?;"
 	err := utils.DB.QueryRow(sql, name, newPassword).Scan(&user.ID, &user.Name, &user.Password, &user.Root, &user.ImgPath, &user.Email)
@@ -47,7 +46,7 @@ func IsEmailOK(email string) (*model.User, error) {
 func InsertUser(user *model.User) error {
 	defer rwmutexUser.Unlock()
 	rwmutexUser.Lock()
-	newPassword := utils.Md5Str(md5.Sum([]byte(user.Password)))
+	newPassword := user.Password
 	sql := "insert into users(name, password, root, img_path, email) VALUES(?,?,?,?,?)"
 	_, err := utils.DB.Exec(sql, user.Name, newPassword, user.Root, user.ImgPath, user.Email)
 	if err != nil {
@@ -60,7 +59,7 @@ func InsertUser(user *model.User) error {
 func UpdateUser(user *model.User) error {
 	defer rwmutexUser.Unlock()
 	rwmutexUser.Lock()
-	newPassword := utils.Md5Str(md5.Sum([]byte(user.Password)))
+	newPassword := user.Password
 	sql := "update users set name = ?,password = ? where id = ?"
 	_, err := utils.DB.Exec(sql, user.Name, newPassword, user.ID)
 	if err != nil {

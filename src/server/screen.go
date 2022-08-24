@@ -1,8 +1,8 @@
 package server
 
 import (
-	"dao"
-	"model"
+	"cinema/dao"
+	"cinema/model"
 )
 
 // GetPageScreens 获取分页影厅信息

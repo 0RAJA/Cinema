@@ -1,9 +1,10 @@
 package dao
 
 import (
-	"model"
 	"time"
-	"utils"
+
+	"cinema/model"
+	"cinema/utils"
 )
 
 // AddPlan 增加演出计划
@@ -20,7 +21,7 @@ func AddPlan(plan *model.Plan) error {
 	if err != nil {
 		return err
 	}
-	//再增加票
+	// 再增加票
 	seats, err := GetSeatsByScreenID(plan.ScreenID)
 	if err != nil {
 		return err
@@ -70,7 +71,7 @@ func AddPlan(plan *model.Plan) error {
 func DeletePlanByID(planID int) error {
 	defer rwmutexPlan.Unlock()
 	rwmutexPlan.Lock()
-	//先删除票
+	// 先删除票
 	err := DeleteTicketsByPlanID(planID)
 	if err != nil {
 		return err
@@ -87,7 +88,7 @@ func DeletePlanByID(planID int) error {
 func DeletePlansByScreenID(screenID int) error {
 	defer rwmutexPlan.Unlock()
 	rwmutexPlan.Lock()
-	//先删除票
+	// 先删除票
 	err := DeleteTicketsByScreenID(screenID)
 	if err != nil {
 		return err
@@ -105,7 +106,7 @@ func GetPagePlans(pageNo int) (*model.Page, error) {
 	defer rwmutexPlan.RUnlock()
 	rwmutexPlan.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
-	//获取总记录数和总页数
+	// 获取总记录数和总页数
 	sql := "select count(*) from plan;"
 	err := utils.DB.QueryRow(sql).Scan(&page.TotalRecord)
 	if err != nil {
@@ -115,7 +116,7 @@ func GetPagePlans(pageNo int) (*model.Page, error) {
 	if page.TotalRecord%page.PageSize != 0 {
 		page.TotalPageNo++
 	}
-	//通过limit获取图书
+	// 通过limit获取图书
 	sql = "select id, screen_id, movie_id, up_time, down_time, price from plan limit ?,?;"
 	rows, err := utils.DB.Query(sql, (page.PageNo-1)*page.PageSize, page.PageSize)
 	if err != nil {
@@ -128,7 +129,7 @@ func GetPagePlans(pageNo int) (*model.Page, error) {
 		if err != nil {
 			return nil, err
 		}
-		//填充信息
+		// 填充信息
 		screen, err := GetScreenByID(plan.ScreenID)
 		if err != nil {
 			return nil, err
@@ -204,7 +205,7 @@ func GetAllPlans() ([]*model.Plan, error) {
 	return plans, err
 }
 
-//一键填充并格式化时间
+// 一键填充并格式化时间
 func formatTime(plan *model.Plan) {
 	t, _ := time.Parse(model.PlanTimeFormat, plan.UpTime)
 	plan.UpTimeFormat = t.Format(model.PlanTimeFormatOK)

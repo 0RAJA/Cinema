@@ -2,9 +2,10 @@ package dao
 
 import (
 	"fmt"
-	"github.com/gofrs/uuid"
-	"model"
 	"testing"
+
+	"cinema/model"
+	"github.com/gofrs/uuid"
 )
 
 func TestAddAndUpdateSession(t *testing.T) {

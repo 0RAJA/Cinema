@@ -1,8 +1,8 @@
 package server
 
 import (
-	"dao"
-	"model"
+	"cinema/dao"
+	"cinema/model"
 )
 
 // GetPageMovies 获取分页电影信息

@@ -3,9 +3,10 @@ package dao
 import (
 	"fmt"
 	"log"
-	"model"
 	"testing"
 	"time"
+
+	"cinema/model"
 )
 
 func TestAddComment(t *testing.T) {

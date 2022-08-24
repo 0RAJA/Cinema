@@ -1,7 +1,7 @@
 package server
 
 import (
-	"dao"
+	"cinema/dao"
 )
 
 // UpdateBox 更新票房

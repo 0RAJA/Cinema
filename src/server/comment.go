@@ -1,8 +1,8 @@
 package server
 
 import (
-	"dao"
-	"model"
+	"cinema/dao"
+	"cinema/model"
 )
 
 func AddComment(comment *model.Comment) error {

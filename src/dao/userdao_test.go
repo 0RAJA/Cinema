@@ -2,8 +2,9 @@ package dao
 
 import (
 	"fmt"
-	"model"
 	"testing"
+
+	"cinema/model"
 )
 
 func TestInsertUser(t *testing.T) {

@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 const (
@@ -16,7 +16,7 @@ func AddAndUpdateSession(session *model.Session) error {
 	if err != nil {
 		return err
 	}
-	sql = "insert into session values(?,?) "
+	sql = "insert into session(id, user_id) values(?,?) "
 	_, err = utils.DB.Exec(sql, session.ID, session.UserID)
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func GetSessionByID(sessionID string) (*model.Session, error) {
 	if err != nil {
 		return nil, err
 	}
-	user, err := GetUserByID(session.UserID) //填充其他字段
+	user, err := GetUserByID(session.UserID) // 填充其他字段
 	if err != nil {
 		return nil, err
 	}

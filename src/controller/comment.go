@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"log"
-	"model"
 	"net/http"
-	"server"
 	"strconv"
 	"time"
+
+	"cinema/model"
+	"cinema/server"
 )
 
 func GetAllComments(w http.ResponseWriter, r *http.Request) {

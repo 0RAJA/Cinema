@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"model"
 	"net/http"
-	"server"
 	"strconv"
 	"text/template"
-	"utils"
+
+	"cinema/model"
+	"cinema/server"
+	"cinema/utils"
 )
 
 // ManageMain 管理员主页
@@ -376,12 +377,12 @@ func AddOrUpdateMovie(w http.ResponseWriter, r *http.Request) {
 	}
 	// 将请求体中的 JSON 数据解析到结构体中
 	// 发生错误，返回400 错误码
-	//err := json.NewDecoder(r.Body).Decode(&movie)
-	//fmt.Println(movie, err)
-	//if err != nil {
+	// err := json.NewDecoder(r.Body).Decode(&movie)
+	// fmt.Println(movie, err)
+	// if err != nil {
 	//	http.Error(w, err.Error(), http.StatusBadRequest)
 	//	return
-	//}
+	// }
 	err = server.AddOrUpdateMovie(&movie)
 	if err != nil {
 		log.Println(err)

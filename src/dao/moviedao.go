@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"model"
-	"utils"
+	"cinema/model"
+	"cinema/utils"
 )
 
 // PAGESIZE 分页大小
@@ -17,7 +17,7 @@ func AddMovie(movie *model.Movie) error {
 	if err != nil {
 		return err
 	}
-	//增加票房信息
+	// 增加票房信息
 	sql = "select max(id) from movie;"
 	var movieID int
 	err = utils.DB.QueryRow(sql).Scan(&movieID)
@@ -82,7 +82,7 @@ func GetPageMovies(pageNo int) (*model.Page, error) {
 	defer rwmutexMovie.RUnlock()
 	rwmutexMovie.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
-	//获取总记录数和总页数
+	// 获取总记录数和总页数
 	sql := "select count(*) from movie;"
 	err := utils.DB.QueryRow(sql).Scan(&page.TotalRecord)
 	if err != nil {
@@ -92,7 +92,7 @@ func GetPageMovies(pageNo int) (*model.Page, error) {
 	if page.TotalRecord%page.PageSize != 0 {
 		page.TotalPageNo++
 	}
-	//通过limit获取图书
+	// 通过limit获取图书
 	sql = "select * from movie limit ?,?;"
 	rows, err := utils.DB.Query(sql, (page.PageNo-1)*page.PageSize, page.PageSize)
 	if err != nil {
@@ -117,7 +117,7 @@ func GetPageMoviesByName(pageNo int, movieName string) (*model.Page, error) {
 	rwmutexMovie.RLock()
 	page := model.Page{PageSize: PAGESIZE, PageNo: pageNo}
 	limit := "%" + movieName + "%"
-	//获取总记录数和总页数
+	// 获取总记录数和总页数
 	sql := "select count(*) from movie where name like ?;"
 	err := utils.DB.QueryRow(sql, limit).Scan(&page.TotalRecord)
 	if err != nil {
@@ -127,7 +127,7 @@ func GetPageMoviesByName(pageNo int, movieName string) (*model.Page, error) {
 	if page.TotalRecord%page.PageSize != 0 {
 		page.TotalPageNo++
 	}
-	//通过limit获取图书
+	// 通过limit获取图书
 	sql = "select * from movie where name like ? limit ?,?;"
 	rows, err := utils.DB.Query(sql, limit, (page.PageNo-1)*page.PageSize, page.PageSize)
 	if err != nil {
